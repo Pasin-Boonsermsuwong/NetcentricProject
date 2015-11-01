@@ -84,7 +84,7 @@ public class NumberGenerator {
 		//Generator the string of equation; eg: 4+5*15/5
 		StringBuilder sb = new StringBuilder();
 		for(int i= 0;i<n.list.length;i++){
-			sb.append(n.list[i]);
+			sb.append(n.list[i] +".0");
 			if(i<n.list.length-1)sb.append(n.operators[i]);
 		}
 		//Calculate answer
@@ -112,7 +112,26 @@ public class NumberGenerator {
 		}
 	//	System.out.println(result+" "+result.getClass());
 		return (int) result;
+	}
+	public static double calculateAnswerDouble(String question){
+		Interpreter interpreter = new Interpreter();
 
+		try {
+			interpreter.eval("result = "+question);
+		} catch (EvalError e) {
+			System.err.println("EvalError");
+			e.printStackTrace();
+		}
+		
+		Object result = null;
+		try {
+			result = interpreter.get("result");
+		} catch (EvalError e) {
+			System.err.println("EvalError");
+			e.printStackTrace();
+		}
+	//	System.out.println(result+" "+result.getClass());
+		return (double) result;
 	}
 
 }
