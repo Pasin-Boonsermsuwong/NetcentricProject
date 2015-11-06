@@ -4,12 +4,12 @@ public class NumberClass {
 
 	//STORES QUESTIONS
 	final int NUM_OF_NUMBERS = 5;
-	public int[] list;
+	public double[] list;
 	public String[] operators;
-	public int answer;
+	public double answer;
 
 	public NumberClass(){
-		list = new int[NUM_OF_NUMBERS];
+		list = new double[NUM_OF_NUMBERS];
 		operators = new String[NUM_OF_NUMBERS-1];
 	}
 	@Override
