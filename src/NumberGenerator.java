@@ -78,7 +78,8 @@ public class NumberGenerator {
 				int maxDenom = Math.min(maxInteger, numerator);
 				while(true){
 					n.list[i+1] = rand.nextInt((Math.min(maxDenom, maxInteger) - minInteger) + 1) + minInteger;
-					if(numerator%n.list[i+1] == 0)break;			
+					System.out.println("N: "+numerator+" D: "+n.list[i+1]);
+					if(numerator%n.list[i+1] == 0.0)break;			
 				}
 				break;
 			}
