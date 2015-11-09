@@ -9,7 +9,7 @@ public class NumberGenerator {
 	//GENERATE QUESTIONS
 	
 	
-	final static int maxInteger = 50;
+	final static int maxInteger = 9;
 	final static int minInteger = 1;
 	
 	public static void main(String[] args) {
@@ -44,8 +44,7 @@ public class NumberGenerator {
 		
 
 		for(int i = 0;i<n.operators.length;i++){
-		//	int operator = weightedRandom(new int[]{45,15,30,10});
-			int operator = weightedRandom(new int[]{6,6,11,11});
+			int operator = weightedRandom(new int[]{6,6,6,2});
 			switch(operator){
 			case 0:		// +
 				n.operators[i] ="+";
@@ -78,11 +77,12 @@ public class NumberGenerator {
 				//randomize possible denominator
 				int maxDenom = Math.min(maxInteger, numerator);
 				while(true){
-					n.list[i+1] = rand.nextInt(Math.max(1,(maxDenom - minInteger) + 1)) + minInteger;			
+					n.list[i+1] = rand.nextInt((Math.min(maxDenom, maxInteger) - minInteger) + 1) + minInteger;
 					if(numerator%n.list[i+1] == 0)break;			
 				}
 				break;
 			}
+			shuffleArray(n.list);
 		}	
 		
 		//Generator the string of equation; eg: 4+5*15/5

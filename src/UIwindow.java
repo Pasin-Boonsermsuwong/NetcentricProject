@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -45,38 +46,40 @@ public class UIwindow extends JFrame {
 	private JPanel opPanel;
 	private JLabel l1;
 	private JLabel l2;
-	private JLabel currentPlayerLabel;
+	public JLabel currentPlayerLabel;
 	private Component rigidArea;
-	private JButton button;
-	private JButton button_1;
-	private JButton btnX;
-	private JButton button_3;
+	private JButton buttonAdd;
+	private JButton buttonMinus;
+	private JButton buttonMulti;
+	private JButton buttonDiv;
 	private JTextField leftField;
 	private JLabel l3;
 	private JTextField rightField;
-	private JLabel p1;
 	private JLabel l00;
 	private Component rigidArea_1;
-	private JLabel p2;
 	private JLabel l01;
-	private JLabel p1score;
-	private JLabel p2score;
+
 	JButton[] buttons = new JButton[numbers];
 	private JLabel lblTheResultIs;
 	private Component horizontalGlue;
 	private Component horizontalGlue_1;
-	private JLabel resultLabel;
 	private Component rigidArea_2;
 	private JLabel lblTimeLeft;
-	private JLabel timeLabel;
 	private JLabel lblSec;
+	private JButton buttonBack;
+	
+	public JLabel p1;
+	public JLabel p2;
+	public JLabel p1score;
+	public JLabel p2score;
+	public JLabel timeLabel;
+	public JLabel resultLabel;
+	
+	GameController gc;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-
-		//String s = " 2 x 4 x 5 x 6 x 3";
-		//	System.out.println(Arrays.toString(s.trim().split(" ")));
+	public static void main(String[] args){
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -102,6 +105,7 @@ public class UIwindow extends JFrame {
 		initGUI();
 	}
 	private void initGUI() {
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 610, 407);
 		contentPane = new JPanel();
@@ -211,7 +215,9 @@ public class UIwindow extends JFrame {
 			numberPanel.add(buttons[i]);
 			buttons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					addToField(((JButton)arg0.getSource()).getText());
+					JButton src = (JButton)arg0.getSource();
+					boolean addSuccess = addToField(src.getText());
+					if(addSuccess)src.setEnabled(false);
 				}
 			});
 		}
@@ -233,51 +239,69 @@ public class UIwindow extends JFrame {
 		rightField = new JTextField();
 		rightField.setEditable(false);
 		rightField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		rightField.setColumns(3);
+		rightField.setColumns(7);
 		outputPanel.add(rightField);
 
 		opPanel = new JPanel();
 		gamePanel.add(opPanel);
 		opPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-		button = new JButton("+");
-		button.addActionListener(new ActionListener() {
+		buttonAdd = new JButton("+");
+		buttonAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addToField(((JButton)arg0.getSource()).getText());
 			}
 		});
-		button.setFont(new Font("Tahoma", Font.BOLD, 20));
-		opPanel.add(button);
+		buttonAdd.setFont(new Font("Tahoma", Font.BOLD, 20));
+		opPanel.add(buttonAdd);
 
-		button_1 = new JButton("-");
-		button_1.addActionListener(new ActionListener() {
+		buttonMinus = new JButton("-");
+		buttonMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addToField(((JButton)arg0.getSource()).getText());
 			}
 		});
-		button_1.setFont(new Font("Tahoma", Font.BOLD, 20));
-		opPanel.add(button_1);
+		buttonMinus.setFont(new Font("Tahoma", Font.BOLD, 20));
+		opPanel.add(buttonMinus);
 
-		btnX = new JButton("x");
-		btnX.addActionListener(new ActionListener() {
+		buttonMulti = new JButton("x");
+		buttonMulti.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addToField(((JButton)arg0.getSource()).getText());
 			}
 		});
-		btnX.setFont(new Font("Tahoma", Font.BOLD, 20));
-		opPanel.add(btnX);
+		buttonMulti.setFont(new Font("Tahoma", Font.BOLD, 20));
+		opPanel.add(buttonMulti);
 
-		button_3 = new JButton("/");
-		button_3.addActionListener(new ActionListener() {
+		buttonDiv = new JButton("/");
+		buttonDiv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addToField(((JButton)arg0.getSource()).getText());
 			}
 		});
-		button_3.setFont(new Font("Tahoma", Font.BOLD, 20));
-		opPanel.add(button_3);
+		buttonDiv.setFont(new Font("Tahoma", Font.BOLD, 20));
+		opPanel.add(buttonDiv);
+		
+		buttonBack = new JButton("BACK");
+		buttonBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteFromField();
+			}
+		});
+		buttonBack.setFont(new Font("Tahoma", Font.BOLD, 20));
+		opPanel.add(buttonBack);
 
 	}
-
+	public void setName(String playerName,String opponentName){
+		p1.setText(playerName);
+		p2.setText(opponentName);
+		p1score.setText("0");
+		p2score.setText("0");
+	}
+	public void setQuestion(NumberClass nc){
+		setButtons(nc);
+		resultLabel.setText(""+nc.answer);
+	}
 	public void setButtons(int[] num){
 		if(num.length != buttons.length){
 			System.err.println("#Buttons and #NumLength mismatch");
@@ -306,21 +330,36 @@ public class UIwindow extends JFrame {
 			buttons[i].setText(num[i]+"");
 		}
 	}
-	public void addToField(String s){
+	public void setEnableNumberButtons(boolean enabled){
+		for(int i = 0;i<buttons.length;i++){
+			buttons[i].setEnabled(enabled);
+		}
+	}
+	public void setEnableOperatorButtons(boolean enabled){
+		buttonAdd.setEnabled(enabled);
+		buttonMinus.setEnabled(enabled);
+		buttonMulti.setEnabled(enabled);
+		buttonDiv.setEnabled(enabled);
+		buttonBack.setEnabled(enabled);
+	}
+	/**
+	 * @param s
+	 * @return false if addition in invalid for whatever reason
+	 */
+	boolean addToField(String s){
 		String[] field = leftField.getText().trim().split(" ");
-		if(field.length>=numbers*2-1)return;
+		if(field.length>=numbers*2-1)return false;
 		//TODO: backspace button also clear answer
 
 		if(isNumber(s)!=isNumber(field[field.length-1])){	//next input must be operator if previous is number - vice versa
 			leftField.setText(leftField.getText() +" "+s);
-		}else return;
+		}else return false;
 
 		if(leftField.getText().trim().split(" ").length%2==1){		// if length % 2 ==1 , calculate answer
 			field = leftField.getText().trim().split(" ");	//update array
 			StringBuilder sb = new StringBuilder();
 			for(int i= 0;i<field.length;i++){
 				if(isNumber(field[i])){
-					//	sb.append(field[i]+".0");
 					sb.append(field[i]);
 				}else
 					sb.append(field[i]);
@@ -328,10 +367,49 @@ public class UIwindow extends JFrame {
 			System.out.println("FINAL: "+sb.toString().replace('x','*'));
 			rightField.setText(""+NumberGenerator.calculateAnswerDouble(sb.toString().replace('x','*')));
 			rightField.setCaretPosition(0);
+			// if all numbers are used, check is result is correct
+			for(int i = 0;i<buttons.length;i++){
+				if(buttons[i].isEnabled())return true;
+			}
+			if(rightField.getText().equals(resultLabel)){//then popup win message
+				JOptionPane.showMessageDialog(this, "You Win", "", JOptionPane.INFORMATION_MESSAGE);
+				gc.endTurn(true);
+			}
+			
 		}
+		return true;
+	}
+	void deleteFromField(){
+		String s = leftField.getText();
+		if(s.length()==0)return;
+		boolean calculate = false;
+		String deletedNumber = (s.substring(s.lastIndexOf(' '), s.length()).trim());
+		System.out.println("DELETED:"+deletedNumber);
+		if(isNumber(deletedNumber)){
+			calculate = true;
+			//undo disabling of specific button
+			boolean found = false;
+			for(int i = 0;i<buttons.length;i++){
+				if(buttons[i].getText().equals(deletedNumber)&&buttons[i].isEnabled()==false){
+					buttons[i].setEnabled(true);
+					found = true;
+					break;
+				}
+			}
+			if(!found)System.err.println("UNDO BUTTON ENABLE NOT FOUND");
+		}
+		//recalculate answer
+		if(!calculate){
+			rightField.setText(""+NumberGenerator.calculateAnswerDouble(s.substring(0,s.lastIndexOf(' ')).replace('x','*')));
+			rightField.setCaretPosition(0);
+		}else{
+			rightField.setText("");
+		}
+		leftField.setText(s.substring(0,s.lastIndexOf(' ')));
 	}
 
 	public boolean isNumber(String s){
+		s = s.trim();
 		try{
 			Double.parseDouble(s);
 		}catch(NumberFormatException e){
