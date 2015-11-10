@@ -12,7 +12,8 @@ import javax.swing.JTextField;
 
 
 public class ConnectUI extends JPanel{
-
+	
+	public GameController gc;
 	private JPanel contentPane;
 	private JPanel[][] panelHolder = new JPanel[3][3]; 
 	private JLabel ipLabel;

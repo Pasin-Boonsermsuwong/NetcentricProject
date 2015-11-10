@@ -34,10 +34,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.SwingConstants;
 
 
-public class UIwindow extends JFrame {
+public class UIwindow extends JPanel {
 
 	final int numbers = 5;
-	private JPanel contentPane;
+//	private JPanel contentPane;
 	private JPanel gamePanel;
 	private JPanel namePanel;
 	private JPanel dataPanel;
@@ -106,15 +106,15 @@ public class UIwindow extends JFrame {
 	}
 	private void initGUI() {
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	//	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 610, 407);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new CardLayout(0, 0));
+	//	contentPane = new JPanel();
+		this.setBorder(new EmptyBorder(5, 5, 5, 5));
+	//	setContentPane(contentPane);
+		this.setLayout(new CardLayout(0, 0));
 
 		gamePanel = new JPanel();
-		contentPane.add(gamePanel, "name_258739885609642");
+		this.add(gamePanel, "name_258739885609642");
 		gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
 
 		namePanel = new JPanel();

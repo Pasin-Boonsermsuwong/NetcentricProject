@@ -14,7 +14,10 @@ import javax.swing.SwingConstants;
 
 
 public class NameUI extends JPanel{
+	
+	public GameController gc;
 	private JTextField textField;
+
 	
 	public static String name;
 	

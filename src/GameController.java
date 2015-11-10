@@ -13,13 +13,17 @@ public class GameController {
     int scorePlayer = 0;
     int scoreOpponent = 0;
     boolean activeTurn = false;
-    UIwindow window;
+    
+    public MainFrame mainFrame;
+    public UIwindow gameUI;
+    public NameUI nameUI;
+    public ConnectUI connectUI;
+    
+    
     
     Timer timer;
     long elaspedTime;
     
-    
-	GameState m_curState;
 	public enum GameState {
 	    ENTER_NAME,
 	    ENTER_IP,
@@ -56,48 +60,48 @@ public class GameController {
 
 	}
    
-	void GameStateUpdate() {
+	void GameStateUpdate(GameState gs) {
 	     // handle update
-	    switch(m_curState) {
+	    switch(gs) {
 	       case ENTER_NAME:
-
+	    	   mainFrame.changeCard("nameUI");
 	          break;
 	       case ENTER_IP:
-
+	    	   mainFrame.changeCard("connectUI");
 	          break;
 	       case GAME_WAITING:
-
+	    	   mainFrame.changeCard("gameUI");
 	          break;
 	       case GAME_PLAYING:
-	    	   
-	    	   break;
+	    	   mainFrame.changeCard("gameUI");
+	    	  break;
 	    }
 	}
 	
     public void setUIwindow(UIwindow window){
-    	this.window = window;
+    	this.gameUI = window;
     	window.gc = this;
     }
     private void init(boolean isFirstPlayer){
     	
     }
     private void startTurn(){
-    	if(window ==null){
+    	if(gameUI ==null){
     		System.err.println("UIwindow is null in GameController");
     		return;
     	}
-    	window.setEnableOperatorButtons(true);
-    	window.setEnableNumberButtons(true);
-    	window.setQuestion(NumberGenerator.generate(seed,true));
+    	gameUI.setEnableOperatorButtons(true);
+    	gameUI.setEnableNumberButtons(true);
+    	gameUI.setQuestion(NumberGenerator.generate(seed,true));
     	activeTurn = true;
-    	window.currentPlayerLabel.setText(playerName);
+    	gameUI.currentPlayerLabel.setText(playerName);
     	elaspedTime = Instant.now().toEpochMilli();
     	timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             int i = TURNTIME;
             public void run() {
                 System.out.println("Time left: "+i--);
-                window.timeLabel.setText(""+i);
+                gameUI.timeLabel.setText(""+i);
                 if (i<= 0||!activeTurn){
                 	if(activeTurn)GameController.this.endTurn(false);
                 	
@@ -114,8 +118,8 @@ public class GameController {
     		return;
     	}
     	activeTurn = false;
-    	window.setEnableOperatorButtons(false);
-    	window.setEnableNumberButtons(false);
+    	gameUI.setEnableOperatorButtons(false);
+    	gameUI.setEnableNumberButtons(false);
     	if(FinishOnTime){
     		elaspedTime =  Instant.now().toEpochMilli() - elaspedTime;
          	System.out.println("Elasped "+elaspedTime+" ms");    		
