@@ -18,11 +18,16 @@ public class GameController {
     Timer timer;
     long elaspedTime;
     
+    
+	GameState m_curState;
+	public enum GameState {
+	    ENTER_NAME,
+	    ENTER_IP,
+	    GAME_WAITING,
+	    GAME_PLAYING
+	}
+	
 	public static void main(String[] args) {
-				
-		
-		
-		
 
 		UIwindow frame = new UIwindow();
 		frame.setVisible(true);
@@ -51,6 +56,24 @@ public class GameController {
 
 	}
    
+	void GameStateUpdate() {
+	     // handle update
+	    switch(m_curState) {
+	       case ENTER_NAME:
+
+	          break;
+	       case ENTER_IP:
+
+	          break;
+	       case GAME_WAITING:
+
+	          break;
+	       case GAME_PLAYING:
+	    	   
+	    	   break;
+	    }
+	}
+	
     public void setUIwindow(UIwindow window){
     	this.window = window;
     	window.gc = this;
@@ -65,7 +88,7 @@ public class GameController {
     	}
     	window.setEnableOperatorButtons(true);
     	window.setEnableNumberButtons(true);
-    	window.setQuestion(NumberGenerator.generate(seed));
+    	window.setQuestion(NumberGenerator.generate(seed,true));
     	activeTurn = true;
     	window.currentPlayerLabel.setText(playerName);
     	elaspedTime = Instant.now().toEpochMilli();
