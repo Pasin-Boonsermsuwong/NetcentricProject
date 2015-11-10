@@ -86,7 +86,7 @@ public class UIwindow extends JFrame {
 				try {
 					UIwindow frame = new UIwindow();
 					frame.setVisible(true);
-					NumberClass nc = NumberGenerator.generate((long)(Math.random()*599));
+					NumberClass nc = NumberGenerator.generate((long)(Math.random()*599),true);
 					NumberGenerator.shuffleArray(nc.list);
 					frame.setButtons(nc.list);
 					frame.resultLabel.setText(""+nc.answer);

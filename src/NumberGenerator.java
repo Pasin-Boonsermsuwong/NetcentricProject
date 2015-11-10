@@ -18,7 +18,7 @@ public class NumberGenerator {
 		//System.out.println(calculateAnswer("1+2/2"));
 		Random rand = new Random();
 		for(int i=0;i<100;i++){
-			System.out.println(generate(rand.nextLong()).toString());
+			System.out.println(generate(rand.nextLong(),false).toString());
 		}
 	//	System.out.println(calculateAnswer("5-3*4-3/9"));
 
@@ -29,7 +29,7 @@ public class NumberGenerator {
 	 * @param seed
 	 * @return
 	 */
-	public static NumberClass generate(long seed){	//INT
+	public static NumberClass generate(long seed,boolean shuffle){	//INT
 		
 		NumberClass n = new NumberClass();
 		Random rand = new Random(seed);
@@ -45,6 +45,7 @@ public class NumberGenerator {
 
 		for(int i = 0;i<n.operators.length;i++){
 			int operator = weightedRandom(new int[]{6,6,6,2});
+												  //+,-,x,/
 			switch(operator){
 			case 0:		// +
 				n.operators[i] ="+";
@@ -72,18 +73,23 @@ public class NumberGenerator {
 					sb.append(n.list[k]);
 					if(k<i)sb.append(n.operators[k]);
 				}
+			//	System.out.println("NUMERATORSTRING: "+sb.toString());
 				int numerator = (int) Math.round(calculateAnswerDouble(sb.toString()));		
 				
 				//randomize possible denominator
 				int maxDenom = Math.min(maxInteger, numerator);
+
 				while(true){
-					n.list[i+1] = rand.nextInt((Math.min(maxDenom, maxInteger) - minInteger) + 1) + minInteger;
-					System.out.println("N: "+numerator+" D: "+n.list[i+1]);
-					if(numerator%n.list[i+1] == 0.0)break;			
+					n.list[i+1] = rand.nextInt((maxDenom - minInteger) + 1) + minInteger;		
+
+					if(numerator%n.list[i+1] == 0){
+						System.out.println("N: "+numerator+" D: "+n.list[i+1]);
+						break;	
+					}		
 				}
 				break;
 			}
-			shuffleArray(n.list);
+			
 		}	
 		
 		//Generator the string of equation; eg: 4+5*15/5
@@ -95,6 +101,7 @@ public class NumberGenerator {
 		//Calculate answer
 		n.answer = calculateAnswerDouble(sb.toString());
 		
+		if(shuffle)shuffleArray(n.list);
 		return n;
 		
 	}

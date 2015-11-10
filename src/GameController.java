@@ -46,7 +46,7 @@ public class GameController {
 		
 		
 		
-		frame.setQuestion(NumberGenerator.generate(gc.seed));	
+		frame.setQuestion(NumberGenerator.generate(gc.seed,true));	
 		gc.startTurn();
 
 	}

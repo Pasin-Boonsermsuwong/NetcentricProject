@@ -38,7 +38,7 @@ public class Client{
 		}
 		thread = new Thread(){
 			public void run(){
-				sendName();
+				sendData();
 				while(ConnectUI.connected){
 					String receivedMSG = "";
 					System.out.println("Client Ready to receive message");
@@ -60,10 +60,11 @@ public class Client{
 		thread.start();
 	}
 	
-	public void sendName(){
+	public void sendData(){
 		pw.println(NameUI.name);
 		pw.flush();
 	}
+
 	
 	public void closeClient(){
 		pw.close();
