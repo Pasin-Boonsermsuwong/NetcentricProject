@@ -23,10 +23,10 @@ public class ConnectUI extends JPanel{
 	
 	//Server
 	private ServerSocket serverSocket;
-	private Server server;
+	public Server server;
 	
 	//Client
-	private Client client;
+	public Client client;
 	
 	public static boolean connected = true;
 	public static final String END_MESSAGE = "ENDCONNECTION.";
@@ -90,6 +90,7 @@ public class ConnectUI extends JPanel{
 			serverSocket = new ServerSocket(PORT,50,addr);
 			
 			//serverSocket = new ServerSocket(PORT);
+			gc.isServer=true;
 			server = new Server(serverSocket);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -99,6 +100,7 @@ public class ConnectUI extends JPanel{
 	
 	private void connectToServer(String IP,int port){
 		System.out.println("Connecting to server "+IP);
+		gc.isServer=false;
 		client = new Client(IP,port);
 	}
 	

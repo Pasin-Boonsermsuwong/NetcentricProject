@@ -117,44 +117,25 @@ public class Server{
 				gc.opponentName = message;//flow c - set gc.p2
 				gc.generateSeed();//flow d - generate seed
 				sendData(2,NameUI.name,gc.seed);// flow e - send type 2
-				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);// flow f -setState active turn
+				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
+				gc.activeTurn=true;
 				break;
 			case 2:
 				gc.opponentName = message;//flow g
 				gc.seed=seed;
-				gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+				gc.GameStateUpdate(gc.gamestate.GAME_WAITING);//flow h?
+				gc.activeTurn=false;
 				break;
 			case 3:
+				//flow k
+				gc.elapsedTime_opponent = Long.parseLong(message);
+				//flow l
+				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+				gc.activeTurn=true;
 				break;
 			default:
 				break;
 		}
 	}
-	/*
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		try {
-			System.out.println(serverSocket.getInetAddress());
-			//System.out.println(serverSocket.getInetAddress().getHostAddress());
-			//System.out.println(serverSocket.getInetAddress().getHostName());
-			while(true){
-				System.out.println("server listening");
-				socket = serverSocket.accept();
-				isr = new InputStreamReader(socket.getInputStream());
-				br = new BufferedReader(isr);
-				pw = new PrintWriter(socket.getOutputStream());
-				System.out.println("Ready to receive message.");
-				String receivedMsg = br.readLine();
-				while(receivedMsg!="END CONNECTION"){
-					System.out.println("message recieved: "+ receivedMsg);
-					receivedMsg = br.readLine();
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}*/
+	
 }

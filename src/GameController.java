@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 
 public class GameController {
 
+	boolean isServer;
+	
 	final int TURNTIME = 60;
 	boolean isFirstPlayer;
 	long seed;
@@ -181,6 +183,19 @@ public class GameController {
 		System.out.println("Elasped Time: "+elapsedTime_player);
 		compareScore();
 		//TODO: SEND DATA (type 3 elasped time)
+		
+		//need to check that the player is 'server' or 'client'
+		//need a boolean for this shit or maybe ku getting confused cuz running both server and client
+		//for now ku added the boolean
+		if(isServer){
+			//flow i
+			connectUI.server.sendData(3, Long.toString(elapsedTime_player));
+			//flow j
+			GameStateUpdate(gamestate.GAME_WAITING);
+		}else{
+			connectUI.client.sendData(3, Long.toString(elapsedTime_player));
+			GameStateUpdate(gamestate.GAME_WAITING);
+		}
 	}
 
 	//TODO: COMPARE SCORE WHEN RECEIVED TYPE 3
@@ -208,6 +223,8 @@ public class GameController {
 		
 	}
 	
-	
+	public void isServer(){
+		
+	}
 	
 }
