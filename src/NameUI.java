@@ -65,14 +65,21 @@ public class NameUI extends JPanel{
 							JOptionPane.ERROR_MESSAGE);
 				}else{
 					System.out.println("Name : "+name);
-					CardLayout cardLayout = GameTest.cardLayout;
-					cardLayout.show(GameTest.contentPane,"connect");
+					setName(name);
+					gc.GameStateUpdate(gc.gamestate.ENTER_IP);
 				}
 			}
 			
 		});
 		panel_1.add(btnNewButton);
 		
+	}
+	
+	public void setName(String name){
+		gc = MainFrame.gc;
+		gc.playerName = name;
+		gc.isFirstPlayer = true;
+		System.out.println("Set name :" + gc.playerName);
 	}
 	
 	public static void main(String []args){

@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import javax.swing.JButton;
@@ -15,9 +16,9 @@ public class ConnectUI extends JPanel{
 	
 	public GameController gc;
 	private JPanel contentPane;
-	private JPanel[][] panelHolder = new JPanel[3][3]; 
-	private JLabel ipLabel;
-	private JTextField ipTextField;
+	private JPanel[][] panelHolder = new JPanel[4][4]; 
+	private JLabel ipLabel,portLabel;
+	private JTextField ipTextField,portTextField;
 	private JButton go,connect;
 	
 	//Server
@@ -32,15 +33,19 @@ public class ConnectUI extends JPanel{
 	public static final int PORT = 2000;
 	
 	public ConnectUI(){
-		this.setLayout(new GridLayout(3,3));
-		initiateGridPanels(3,3);
+		this.setLayout(new GridLayout(4,4));
+		initiateGridPanels(4,4);
 		
 		ipTextField = new JTextField();
-		panelHolder[1][1].add(ipTextField);
+		panelHolder[1][2].add(ipTextField);
 		ipTextField.setColumns(10);;
 		
+		portTextField = new JTextField();
+		panelHolder[2][2].add(portTextField);
+		portTextField.setColumns(10);;
+		
 		go = new JButton("Create Server");
-		panelHolder[2][1].add(go);
+		panelHolder[3][1].add(go);
 		go.addActionListener(new ActionListener(){
 
 			@Override
@@ -52,13 +57,13 @@ public class ConnectUI extends JPanel{
 		});
 		
 		connect = new JButton("Connect");
-		panelHolder[2][2].add(connect);
+		panelHolder[3][2].add(connect);
 		connect.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				connectToServer(ipTextField.getText());
+				connectToServer(ipTextField.getText(),Integer.parseInt(portTextField.getText()));
 			}
 			
 		});
@@ -76,7 +81,15 @@ public class ConnectUI extends JPanel{
 	private void createServer(){
 		System.out.println("Creating server...");
 		try {
-			serverSocket = new ServerSocket(PORT);
+			InetAddress addr= InetAddress.getLocalHost();
+			String hostAddress = addr.getHostAddress();
+			String hostName = addr.getHostName();
+			//System.out.println(addr.toString());
+			System.out.println(hostAddress);
+			//System.out.println(hostName);
+			serverSocket = new ServerSocket(PORT,50,addr);
+			
+			//serverSocket = new ServerSocket(PORT);
 			server = new Server(serverSocket);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -84,9 +97,9 @@ public class ConnectUI extends JPanel{
 		}
 	}
 	
-	private void connectToServer(String IP){
+	private void connectToServer(String IP,int port){
 		System.out.println("Connecting to server "+IP);
-		client = new Client(IP);
+		client = new Client(IP,port);
 	}
 	
 	public static void main (String [] args){

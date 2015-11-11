@@ -17,6 +17,8 @@ public class MainFrame extends JFrame {
 	public NameUI nameUI = new NameUI();
 	public ConnectUI connectUI = new ConnectUI();
 	
+	
+	public static GameController gc;
 	/**  TODO LIST 
 	 * 
 	 */
@@ -26,7 +28,7 @@ public class MainFrame extends JFrame {
 		frame = new MainFrame();
 		frame.setVisible(true);	
 		
-		GameController gc = new GameController();
+		gc = new GameController();
 		gc.mainFrame = frame;
 		gc.gameUI = frame.gameUI;
 		gc.nameUI = frame.nameUI;

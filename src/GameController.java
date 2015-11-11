@@ -27,6 +27,8 @@ public class GameController {
 	Timer timer;
 	public long elapsedTime_player;
 	public long elapsedTime_opponent;
+	
+	GameState gamestate;
 
 	public enum GameState {
 		ENTER_NAME,
@@ -92,6 +94,11 @@ public class GameController {
 		//TODO: send data TYPE 1/2
 	}
 
+	public void generateSeed(){
+		// copied from main of this class
+		this.seed = (long) (Math.random()*900);
+	}
+	
 	public void setUIwindow(UIwindow window){
 		this.gameUI = window;
 		window.gc = this;

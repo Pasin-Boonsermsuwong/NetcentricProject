@@ -20,13 +20,18 @@ public class Server{
 	private BufferedReader br;
 	private PrintWriter pw;
 	
-	private String clientName;
+	//private String clientName;
 	//private boolean receivedMessageBoolean = false;
+	private GameController gc;
 	
 	public Server(ServerSocket serverSocket){
 		System.out.println("IP = "+serverSocket.getInetAddress());
 		System.out.println("Port = "+serverSocket.getLocalPort());
+		System.out.println("HostAddress = "+serverSocket.getInetAddress().getHostAddress());
+		System.out.println("HostName = "+serverSocket.getInetAddress().getHostName());
+		System.out.println("LocalSocketAddress = "+serverSocket.getLocalSocketAddress().toString());
 		this.serverSocket = serverSocket;
+		gc = MainFrame.gc;
 		serverThread = new Thread(){
 			public void run(){
 				while(this.isInterrupted()== false){
@@ -54,8 +59,9 @@ public class Server{
 										System.out.println("Received END_MESSAGE");
 										pw.close();
 									}
-									clientName = receivedMSG;
-									sendName();
+									gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+									decipherData(receivedMSG);
+									//clientName = receivedMSG;
 									//receivedMessageBoolean = true;
 								}
 							}
@@ -71,13 +77,58 @@ public class Server{
 		serverThread.start();
 	}
 	
-	public void sendName(){
-		pw.println(NameUI.name);
+	public void closeServerThread(){
+		serverThread.interrupt();
+	}
+	public void sendData(int type,String data){
+		String message = type+"#"+data;
+		pw.println(message);
+		pw.flush();
+	}
+	//if part probably redundant
+	public void sendData(int type,String data,long seed){
+		if(type == 1){
+			pw.println(type+"#"+"data");
+		}else if(type == 2){
+			pw.println(type+"#"+data+"#"+seed);
+		}
 		pw.flush();
 	}
 	
-	public void closeServerThread(){
-		serverThread.interrupt();
+	public void decipherData(String data){
+		String typeS = data.substring(0, data.indexOf("#"));
+		int type = Integer.parseInt(typeS);
+		String message="";
+		String seedS="";
+		long seed = 0;
+		if(type==1){
+			message = data.substring(data.indexOf("#")+1);
+		}else if(type==2){
+			message = data.substring(data.indexOf("#")+1,data.lastIndexOf("#"));
+			seedS = data.substring(data.lastIndexOf("#")+1);
+			seed = Long.parseLong(seedS);
+		}else if(type==3){
+			
+		}
+		System.out.println("Seed = "+seedS);
+		System.out.println(typeS +" "+message);
+		switch(type){
+			case 1:
+				gc.opponentName = message;//flow c - set gc.p2
+				gc.generateSeed();//flow d - generate seed
+				sendData(2,NameUI.name,gc.seed);// flow e - send type 2
+				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);// flow f -setState active turn
+				break;
+			case 2:
+				gc.opponentName = message;//flow g
+				gc.seed=seed;
+				gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+				break;
+			case 3:
+				break;
+			default:
+				break;
+		}
 	}
 	/*
 	@Override
