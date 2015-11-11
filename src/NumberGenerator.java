@@ -44,7 +44,8 @@ public class NumberGenerator {
 		
 
 		for(int i = 0;i<n.operators.length;i++){
-			int operator = weightedRandom(new int[]{6,6,6,2});
+		//	int operator = weightedRandom(new int[]{6,6,6,2});
+			int operator = weightedRandom(new int[]{6,0,0,0});
 												  //+,-,x,/
 			switch(operator){
 			case 0:		// +

@@ -330,6 +330,11 @@ public class UIwindow extends JPanel {
 			buttons[i].setText(num[i]+"");
 		}
 	}
+	public void setButtons(String s){
+		for(int i = 0;i<buttons.length;i++){
+			buttons[i].setText(s);
+		}
+	}
 	public void setEnableNumberButtons(boolean enabled){
 		for(int i = 0;i<buttons.length;i++){
 			buttons[i].setEnabled(enabled);
@@ -364,18 +369,17 @@ public class UIwindow extends JPanel {
 				}else
 					sb.append(field[i]);
 			}
-			System.out.println("FINAL: "+sb.toString().replace('x','*'));
 			rightField.setText(""+NumberGenerator.calculateAnswerDouble(sb.toString().replace('x','*')));
 			rightField.setCaretPosition(0);
-			// if all numbers are used, check is result is correct
-			for(int i = 0;i<buttons.length;i++){
-				if(buttons[i].isEnabled())return true;
-			}
-			if(rightField.getText().equals(resultLabel)){//then popup win message
-				JOptionPane.showMessageDialog(this, "You Win", "", JOptionPane.INFORMATION_MESSAGE);
-				gc.endTurn(true);
-			}
 			
+			// if all numbers are used, 
+			if(field.length==numbers*2-1){
+				//check if result is correct
+				System.out.println("Final answer = "+rightField.getText()+" : "+resultLabel.getText());
+				if(rightField.getText().equals(resultLabel.getText())){//then popup win message
+					gc.endTurn(true);
+				}			
+			}	
 		}
 		return true;
 	}

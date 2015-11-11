@@ -36,7 +36,7 @@ public class MainFrame extends JFrame {
 		frame.nameUI.gc = gc;
 		frame.connectUI.gc = gc;
 
-		frame.changeCard("gameUI");
+	//	frame.changeCard("gameUI");
 	}
 
 	public MainFrame() {
