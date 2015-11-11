@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
@@ -45,14 +46,15 @@ public class Client{
 		}
 		thread = new Thread(){
 			public void run(){
-				sendData(1,NameUI.name);
+				JOptionPane.showMessageDialog(null,"ClientConnect: "+gc.playerName+"/"+NameUI.name,"",JOptionPane.INFORMATION_MESSAGE);
+				sendData("1#"+gc.playerName);
 				while(ConnectUI.connected){
 					String receivedMSG = "";
 					System.out.println("Client Ready to receive message");
 					try {
 						receivedMSG = br.readLine();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+
 						e.printStackTrace();
 					}
 					System.out.println("Client received msg : " + receivedMSG);
@@ -70,63 +72,46 @@ public class Client{
 		thread.start();
 	}
 	
-	public void sendData(int type,String data){
-		String message = type+"#"+data;
-		pw.println(message);
+	public void sendData(String data){
+		pw.println(data);
 		pw.flush();
 	}
-	
-	//probably not needed here. lmao
-	public void sendData(int type,String data,long seed){
-		if(type == 1){
-			pw.println(type+"#"+"data");
-		}else if(type == 2){
-			pw.println(type+"#"+data+"#"+seed);
-		}
-		pw.flush();
-	}
-	
 	public void decipherData(String data){
-		String typeS = data.substring(0, data.indexOf("#"));
-		int type = Integer.parseInt(typeS);
-		String message="";
-		String seedS="";
-		long seed = 0;
-		if(type==1){
-			message = data.substring(data.indexOf("#")+1);
-		}else if(type==2){
-			message = data.substring(data.indexOf("#")+1,data.lastIndexOf("#"));
-			seedS = data.substring(data.lastIndexOf("#")+1);
-			seed = Long.parseLong(seedS);
-		}else if(type==3){
-			
-		}
-		System.out.println("Seed = "+seedS);
-		System.out.println(typeS +" "+message);
-		switch(type){
-			case 1:
-				gc.opponentName = message;//flow c - set gc.p2
+		
+		String[] d = data.split("#");
+		System.out.println("Client received: "+Arrays.toString(d));
+		/*
+			TYPE 1 = name
+			TYPE 2 = seed,name
+			TYPE 3 = elaspedTime
+		*/
+		switch(d[0]){
+			case "1":
+				gc.opponentName = d[1];//flow c - set gc.p2 - OPPONENT NAME
 				gc.generateSeed();//flow d - generate seed
-				sendData(2,NameUI.name,gc.seed);// flow e - send type 2
+				sendData("2#"+NameUI.name+"#"+gc.seed);// flow e - send type 2
 				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
-				gc.activeTurn=true;
+
 				break;
-			case 2:
-				gc.opponentName = message;//flow g
-				gc.seed=seed;
+			case "2":
+				gc.opponentName = d[1];//flow g
+				gc.seed=Long.parseLong(d[2]);
 				gc.GameStateUpdate(gc.gamestate.GAME_WAITING);//flow h?
-				gc.activeTurn=false;
+
 				break;
-			case 3:
+			case "3":
 				//flow k
-				gc.elapsedTime_opponent = Long.parseLong(message);
+				gc.elapsedTime_opponent = Long.parseLong(d[1]);
 				//flow l
-				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
-				gc.activeTurn=true;
+				if(gc.bothPlayerFinished()){
+					gc.compareScore();
+				}else{
+					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+				}
 				break;
 			default:
+				System.err.println("Unknown data type");
 				break;
 		}
 	}
-
 }

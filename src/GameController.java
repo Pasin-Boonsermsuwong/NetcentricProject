@@ -72,6 +72,7 @@ public class GameController {
 	}
 
 	public void GameStateUpdate(GameState gs) {
+		System.out.println("GameState changed to "+gs);
 		// handle update
 		switch(gs) {
 		case ENTER_NAME:
@@ -152,7 +153,7 @@ public class GameController {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			int i = TURNTIME;
 			public void run() {
-				System.out.println("Time left: "+i--);
+			//	System.out.println("Time left: "+i--);
 				gameUI.timeLabel.setText(""+i);
 				if (i<= 0||!activeTurn){
 					if(activeTurn)GameController.this.endTurn(false);
@@ -165,6 +166,7 @@ public class GameController {
 
 	}
 	public void endTurn(boolean FinishOnTime){
+		gameUI.timeLabel.setText("-");
 		if(!activeTurn){
 			System.err.println("endTurn called when turn is not active");
 			return;
@@ -189,36 +191,41 @@ public class GameController {
 		//for now ku added the boolean
 		if(isServer){
 			//flow i
-			connectUI.server.sendData(3, Long.toString(elapsedTime_player));
+			connectUI.server.sendData("3#"+Long.toString(elapsedTime_player));
 			//flow j
 			GameStateUpdate(gamestate.GAME_WAITING);
 		}else{
-			connectUI.client.sendData(3, Long.toString(elapsedTime_player));
+			connectUI.client.sendData("3#"+Long.toString(elapsedTime_player));
 			GameStateUpdate(gamestate.GAME_WAITING);
 		}
 	}
 
 	//TODO: COMPARE SCORE WHEN RECEIVED TYPE 3
 	public void compareScore(){		//update score if both players finished
-		if(elapsedTime_player>0&&elapsedTime_opponent>0){	//both elapsed time are set
+		if(bothPlayerFinished()){
 			if(elapsedTime_player==Long.MAX_VALUE&&elapsedTime_opponent==Long.MAX_VALUE){
 				JOptionPane.showMessageDialog(null, "Both players cannot solve","Draw!",  JOptionPane.INFORMATION_MESSAGE);
 			}
 			else if(elapsedTime_player<elapsedTime_opponent){
-				JOptionPane.showMessageDialog(null,  "Your time: "+elapsedTime_player+"/nOpponent time: "+elapsedTime_opponent,"You win!", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null,  "Your time: "+elapsedTime_player+"\nOpponent time: "+elapsedTime_opponent,"You win!", JOptionPane.INFORMATION_MESSAGE);
 				gameUI.p1score.setText(""+Integer.parseInt(gameUI.p1score.getText()) + 1);
 			}else if(elapsedTime_player>elapsedTime_opponent){
-				JOptionPane.showMessageDialog(null, "Opponent time: "+elapsedTime_opponent+"/nYour time: "+elapsedTime_player,"Opponent wins!",  JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Opponent time: "+elapsedTime_opponent+"\nYour time: "+elapsedTime_player,"Opponent wins!",  JOptionPane.INFORMATION_MESSAGE);
 				gameUI.p2score.setText(""+Integer.parseInt(gameUI.p2score.getText()) + 1);
 			}else if(elapsedTime_player==elapsedTime_opponent){
 				JOptionPane.showMessageDialog(null,  "Both player used "+elapsedTime_player/1000+" sec","Draw!", JOptionPane.INFORMATION_MESSAGE);
 			}
+			elapsedTime_player = 0;
+			elapsedTime_opponent = 0;
+			GameStateUpdate(gamestate.GAME_FINISHED);
 		}
-		elapsedTime_player = 0;
-		elapsedTime_opponent = 0;
+	
 		//TODO: TEST THIS
 	}
-	
+	public boolean bothPlayerFinished(){
+		if(elapsedTime_player>0&&elapsedTime_opponent>0)return true;
+		return false;
+	}
 	public void startNextGame(){
 		
 	}

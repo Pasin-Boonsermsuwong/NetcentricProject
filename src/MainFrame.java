@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.CardLayout;
+import java.util.Arrays;
 
 
 public class MainFrame extends JFrame {
@@ -19,9 +20,7 @@ public class MainFrame extends JFrame {
 	
 	
 	public static GameController gc;
-	/**  TODO LIST 
-	 * 
-	 */
+
 	public static void main(String[] args) {
 
 		MainFrame frame;

@@ -76,9 +76,10 @@ public class NameUI extends JPanel{
 	}
 	
 	public void setName(String name){
-		gc = MainFrame.gc;
+//		gc = MainFrame.gc;
 		gc.playerName = name;
-		gc.isFirstPlayer = true;
+		gc.gameUI.p1.setText(name);
+//		gc.isFirstPlayer = true;
 		System.out.println("Set name :" + gc.playerName);
 	}
 	

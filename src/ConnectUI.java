@@ -2,12 +2,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -92,8 +94,9 @@ public class ConnectUI extends JPanel{
 			//serverSocket = new ServerSocket(PORT);
 			gc.isServer=true;
 			server = new Server(serverSocket);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
+		}catch (BindException e){
+			JOptionPane.showMessageDialog(null, "Address already in use", "", JOptionPane.ERROR_MESSAGE);
+		}catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
