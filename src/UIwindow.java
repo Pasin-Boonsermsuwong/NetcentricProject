@@ -76,6 +76,8 @@ public class UIwindow extends JPanel {
 	public JLabel resultLabel;
 	
 	GameController gc;
+	private JPanel miscPanel;
+	public JButton buttonNextGame;
 	/**
 	 * Launch the application.
 	 */
@@ -290,6 +292,20 @@ public class UIwindow extends JPanel {
 		});
 		buttonBack.setFont(new Font("Tahoma", Font.BOLD, 20));
 		opPanel.add(buttonBack);
+		
+		miscPanel = new JPanel();
+		gamePanel.add(miscPanel);
+		
+		buttonNextGame = new JButton("START NEXT GAME");
+		buttonNextGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				gc.startNextGame();
+			}
+		});
+		buttonNextGame.setVisible(false);
+		buttonNextGame.setEnabled(false);
+		buttonNextGame.setFont(new Font("Tahoma", Font.BOLD, 20));
+		miscPanel.add(buttonNextGame);
 
 	}
 	public void setName(String playerName,String opponentName){

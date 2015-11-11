@@ -17,8 +17,8 @@ public class MainFrame extends JFrame {
 	public NameUI nameUI = new NameUI();
 	public ConnectUI connectUI = new ConnectUI();
 	
-	/**
-	 * Launch the application.
+	/**  TODO LIST 
+	 * 
 	 */
 	public static void main(String[] args) {
 
