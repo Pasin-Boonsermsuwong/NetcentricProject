@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import a.GameUI;
 import a.NameUI;
+import a.NumberGenerator;
 import a.WelcomeUI;
 
 
@@ -27,7 +28,7 @@ public class GameController_b {
 	boolean activeTurn = false;
 
 	public MainClient mainClient;
-	public GameUI gameUI;
+	public GameUI_b gameUI;
 	public NameUI nameUI;
 	public ConnectUI_b connectUI;
 	public WelcomeUI welcomeUI;
@@ -91,7 +92,7 @@ public class GameController_b {
 		this.seed = (long) (Math.random()*900);
 	}
 	
-	public void setUIwindow(GameUI window){
+	public void setUIwindow(GameUI_b window){
 		this.gameUI = window;
 		window.gc = this;
 	}
@@ -203,25 +204,9 @@ public class GameController_b {
 		//need to check that the player is 'server' or 'client'
 		//need a boolean for this shit or maybe ku getting confused cuz running both server and client
 		//for now ku added the boolean
-		if(isServer){
-			//flow i
-			int total = connectUI.server.socketList.size();
-			System.out.println("Total = "+total);
-			for (int i = 0;i < total;i++){
-				System.out.println("miniserver id ="+connectUI.server.socketList.get(i).id);
-				System.out.println("server id ="+this.serverID);
-				if(connectUI.server.socketList.get(i).id == this.serverID ){
-					connectUI.server.socketList.get(i).sendData("3#"+Long.toString(elapsedTime_player));
-				}
-			}
-			//connectUI.server.sendData("3#"+Long.toString(elapsedTime_player));
-			//flow j
-			GameStateUpdate(gamestate.GAME_WAITING);
-		}else{
-			connectUI.client.sendData("3#"+Long.toString(elapsedTime_player));
-			GameStateUpdate(gamestate.GAME_WAITING);
-		}
-		compareScore();
+
+		connectUI.client.sendData("3#"+Long.toString(elapsedTime_player));
+		GameStateUpdate(gamestate.GAME_WAITING);
 	}
 
 	public void compareScore(){		//update score if both players finished

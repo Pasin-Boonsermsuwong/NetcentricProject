@@ -171,7 +171,7 @@ public class NumberGenerator {
 		return randomIndex;
 		
 	}
-	static void shuffleArray(double[] ar)
+	public static void shuffleArray(double[] ar)
 	{
 		// If running on Java 6 or older, use `new Random()` on RHS here
 		Random rnd = ThreadLocalRandom.current();

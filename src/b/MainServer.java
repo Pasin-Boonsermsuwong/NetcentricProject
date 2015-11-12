@@ -25,7 +25,7 @@ public class MainServer extends JFrame {
 
 	private JPanel contentPane;
 	private ServerSocket serverSocket;
-	private Server server;
+	private Server_b server;
 	
 	/**
 	 * Launch the application.
@@ -58,7 +58,7 @@ public class MainServer extends JFrame {
 			//System.out.println(hostName);
 			serverSocket = new ServerSocket(2000,50,addr);
 			
-			server = new Server(serverSocket);
+			server = new Server_b(serverSocket);
 		}catch (BindException e){
 			JOptionPane.showMessageDialog(null, "Address already in use", "", JOptionPane.ERROR_MESSAGE);
 		}catch (IOException e1) {
