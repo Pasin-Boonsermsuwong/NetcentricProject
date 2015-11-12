@@ -135,6 +135,7 @@ public class GameController {
 			System.err.println("UIwindow is null in GameController");return;
 		}
 		gameUI.resetAnswerField();
+		gameUI.resultLabel.setText("-");
 		gameUI.setEnableOperatorButtons(false);
 		gameUI.setEnableNumberButtons(false);
 		gameUI.setButtons("-");
@@ -175,9 +176,9 @@ public class GameController {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			int i = TURNTIME;
 			public void run() {		
-				i--;
 			//	System.out.println("Time left: "+i);
 				gameUI.timeLabel.setText(""+i);
+				i--;
 				if (i<= 0||!activeTurn){
 					if(activeTurn)GameController.this.endTurn(false);
 					System.out.println("Timer Stopped");
@@ -190,7 +191,10 @@ public class GameController {
 		gameUI.buttonNextGame.setVisible(false);
 		gameUI.buttonNextGame.setEnabled(false);
 	}
-	public void endTurn(boolean FinishOnTime){		//called when complete turn, either by finding correct solution or time out
+	/**called when complete turn, either by finding correct solution or time out
+	 * @param FinishOnTime
+	 */
+	public void endTurn(boolean FinishOnTime){		
 		gameUI.timeLabel.setText("-");
 		if(!activeTurn){
 			System.err.println("endTurn called when turn is not active");
