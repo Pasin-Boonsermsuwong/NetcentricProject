@@ -23,7 +23,7 @@ public class GameController {
 	boolean activeTurn = false;
 
 	public MainFrame mainFrame;
-	public UIwindow gameUI;
+	public GameUI gameUI;
 	public NameUI nameUI;
 	public ConnectUI connectUI;
 	public WelcomeUI welcomeUI;
@@ -55,7 +55,7 @@ public class GameController {
 		System.out.println(Arrays.toString(s.split("/n")));
 		 */
 
-		UIwindow gameUI = new UIwindow();
+		GameUI gameUI = new GameUI();
 		JFrame f= new JFrame();
 		f.add(gameUI);
 		f.setVisible(true);
@@ -114,7 +114,7 @@ public class GameController {
 		this.seed = (long) (Math.random()*900);
 	}
 	
-	public void setUIwindow(UIwindow window){
+	public void setUIwindow(GameUI window){
 		this.gameUI = window;
 		window.gc = this;
 	}

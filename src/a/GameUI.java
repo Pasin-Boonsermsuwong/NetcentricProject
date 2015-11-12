@@ -35,7 +35,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.SwingConstants;
 
 
-public class UIwindow extends JPanel {
+public class GameUI extends JPanel {
 
 	final int numbers = 5;
 //	private JPanel contentPane;
@@ -87,7 +87,7 @@ public class UIwindow extends JPanel {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIwindow frame = new UIwindow();
+					GameUI frame = new GameUI();
 					frame.setVisible(true);
 					NumberClass nc = NumberGenerator.generate((long)(Math.random()*599),true);
 					NumberGenerator.shuffleArray(nc.list);
@@ -104,7 +104,7 @@ public class UIwindow extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public UIwindow() {
+	public GameUI() {
 		initGUI();
 	}
 	private void initGUI() {

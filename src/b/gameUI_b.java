@@ -1,5 +1,5 @@
 package b;
 
-public class gameUI_b {
+public class GameUI_b {
 
 }

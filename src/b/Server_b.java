@@ -15,7 +15,7 @@ public 	class Server_b{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
-	public ArrayList<MiniServer> socketList = new ArrayList<MiniServer>();
+	public ArrayList<MiniServer_b> socketList = new ArrayList<MiniServer_b>();
 	private InputStreamReader isr;
 	private BufferedReader br;
 	private PrintWriter pw;
@@ -23,9 +23,9 @@ public 	class Server_b{
 	
 	private int id =1;
 	
-	private MiniServer miniServer;
+	private MiniServer_b miniServer;
 	
-	public Server(ServerSocket serverSocket){
+	public Server_b(ServerSocket serverSocket){
 		System.out.println("IP = "+serverSocket.getInetAddress());
 		System.out.println("Port = "+serverSocket.getLocalPort());
 		System.out.println("HostAddress = "+serverSocket.getInetAddress().getHostAddress());
@@ -39,7 +39,7 @@ public 	class Server_b{
 						System.out.println("Server is listening...");
 						socket = serverSocket.accept();
 						System.out.println("Server is connected to a socket");
-						miniServer = new MiniServer(socket);
+						miniServer = new MiniServer_b(socket);
 						miniServer.id = id++;
 						socketList.add(miniServer);
 						miniServer.start();

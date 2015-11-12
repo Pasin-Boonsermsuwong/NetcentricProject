@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
 	public CardLayout cl = new CardLayout(0,0);
-	public UIwindow gameUI = new UIwindow();
+	public GameUI gameUI = new GameUI();
 	public NameUI nameUI = new NameUI();
 	public ConnectUI connectUI = new ConnectUI();
 	public WelcomeUI welcomeUI = new WelcomeUI();
