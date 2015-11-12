@@ -8,6 +8,7 @@ import java.net.Socket;
 
 import javax.swing.JOptionPane;
 
+import a.GameController;
 import a.NameUI;
 
 
@@ -17,7 +18,7 @@ public class MiniServer_b extends Thread{
 	InputStreamReader isr;
 	BufferedReader br;
 	PrintWriter pw;
-	
+	GameController_b gc;
 
 	int id = 0;
 	
@@ -29,7 +30,7 @@ public class MiniServer_b extends Thread{
 			br = new BufferedReader(isr);
 			pw = new PrintWriter(socket.getOutputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
@@ -53,7 +54,7 @@ public class MiniServer_b extends Thread{
 		pw.flush();
 	}
 	public void decipherData(String data){
-		
+		System.out.println("miniserver receive: "+data);
 		String[] d = data.split("#");	
 		/*
 			TYPE 1 = name
@@ -77,31 +78,7 @@ public class MiniServer_b extends Thread{
 					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
 				}
 				break;
-			case "2":	//SERVER REMOTELY INITIALIZE CLIENT'S GAME
-				gc.setOpponentName(d[1]);//flow g
-				gc.seed=Long.parseLong(d[2]);
-				id =Integer.parseInt(d[4]);
-				gc.clientID = id;
-				if(Boolean.parseBoolean(d[3])){
-					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
-				}else{
-					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
-				}
-				break;
-			case "3":	//SERVER/CLIENT TELL THEY FINISHED TURN
-				//flow k
-				gc.elapsedTime_opponent = Long.parseLong(d[1]);
-				//flow l
-				if(gc.bothPlayerFinished()){
-					gc.compareScore();
-				}else{
-					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
-				}
-				break;
-			case "4":	//CLIENT TELL TO START NEXT GAME
-				gc.startNextGame_opponent = true;
-				gc.startNextGame();
-				break;
+//TODO: copmlete server shit
 			default:
 				System.err.println("Unknown data type");
 				break;

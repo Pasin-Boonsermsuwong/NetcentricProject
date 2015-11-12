@@ -21,7 +21,7 @@ import a.GameController;
 import a.Server;
 
 public class ConnectUI_b extends JPanel{
-	public GameController gc;
+	public GameController_b gc;
 	private JPanel contentPane;
 	private JPanel[][] panelHolder = new JPanel[4][4]; 
 	private JLabel ipLabel,portLabel;
@@ -51,7 +51,7 @@ public class ConnectUI_b extends JPanel{
 		portLabel.setText("Port:");
 		panelHolder[2][1].add(portLabel);
 		
-		ipTextField = new JTextField("169.254.80.80");		//TODO TEMP
+	//	ipTextField = new JTextField("169.254.80.80");		//TODO TEMP
 		panelHolder[1][2].add(ipTextField);
 		ipTextField.setColumns(10);;
 		

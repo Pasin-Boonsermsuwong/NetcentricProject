@@ -29,9 +29,9 @@ public class GameController_b {
 
 	public MainClient mainClient;
 	public GameUI_b gameUI;
-	public NameUI nameUI;
+	public NameUI_b nameUI;
 	public ConnectUI_b connectUI;
-	public WelcomeUI welcomeUI;
+	public WelcomeUI_b welcomeUI;
 
 //	Timer timer;
 	public long elapsedTime_player;
