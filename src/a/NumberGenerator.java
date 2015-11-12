@@ -28,6 +28,9 @@ public class NumberGenerator {
 	 * @param seed
 	 * @return
 	 */
+	public static long randomSeed(){
+		return (long) (Math.random()*900);
+	}
 	public static NumberClass generate(long seed,boolean shuffle){	//INT
 		System.out.println("Generating question with seed: "+seed);
 		NumberClass n = new NumberClass();

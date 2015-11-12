@@ -19,23 +19,20 @@ public class MiniServer_b extends Thread{
 	BufferedReader br;
 	PrintWriter pw;
 	GameController_b gc;
-
-	//STATUS OF EACH CLIENT
+	Server_b server;
 	
-	public boolean update = false;
+	int id = -1;
+	int id_pair = -1;
+	public ClientState state = ClientState.NON;
 	public String name;
-	public ClientState state = ClientState.NONE;
-	
-	public enum ClientState {
-		NONE,
+	public enum ClientState{
+		NON,
 		WAITING,
 		PLAYING
 	}
+	public boolean startNextGame = false;
 	
 	
-	
-	
-	int id = 0;
 	
 	public MiniServer_b(Socket socket){
 		this.socket = socket;
@@ -69,24 +66,11 @@ public class MiniServer_b extends Thread{
 		pw.flush();
 	}
 	public void decipherData(String data){
-		System.out.println("miniserver receive: "+data);
-		String[] d = data.split("#");	
-		/*
-			TYPE 1 = name
-			TYPE 2 = seed,name,isFirstPlayer			// game initializer
-			TYPE 3 = elaspedTime
-		*/
-		switch(d[0]){
-			case "1":	//CLIENT TELL SERVER THEIR NAME, ALSO MEANS WAITING TO PLAY
-				name = d[1];
-		//		sendData("2#"+"TEMPNAME"+"#"+5000+"#"+true+"#"+id);// flow e - send type 2
-				update = true;
-				state = ClientState.WAITING;
-				break;
-
-			default:
-				System.err.println("Unknown data type");
-				break;
+		//PASS THE DATA UP TO MAIN SERVER
+		if(id==-1){
+			System.err.print("ID error in miniserver");return;
 		}
+		System.out.println("miniserver receive: "+data);
+		server.decipherData(id+"#"+data,this);
 	}
 }

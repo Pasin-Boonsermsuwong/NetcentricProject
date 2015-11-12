@@ -26,7 +26,7 @@ public class Client_b{
 	
 	private GameController_b gc;
 	
-	private int id=0;
+//	private int id=0;
 	
 	public Client_b(){
 		String IP = null;
@@ -95,7 +95,7 @@ public class Client_b{
 			case "1":	//CLIENT TELL SERVER THEIR NAME
 				gc.setOpponentName(d[1]);//flow c - set gc.p2 - OPPONENT NAME
 				gc.generateSeed();//flow d - generate seed
-				sendData("2#"+NameUI_b.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+id);// flow e - send type 2
+				sendData("1#"+NameUI_b.name);// flow e - send type 2
 				if(gc.isFirstPlayer){
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
 				}else{
@@ -103,12 +103,8 @@ public class Client_b{
 				}
 				break;
 			case "2":	//SERVER REMOTELY INITIALIZE CLIENT'S GAME
-				gc.setOpponentName(d[1]);//flow g
-				gc.seed=Long.parseLong(d[2]);
-				if (this.id == 0){
-					this.id =Integer.parseInt(d[4]);
-					gc.clientID = this.id;
-				}
+				gc.setOpponentName(d[2]);//flow g
+				gc.seed=Long.parseLong(d[1]);
 				if(Boolean.parseBoolean(d[3])){
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 				}else{

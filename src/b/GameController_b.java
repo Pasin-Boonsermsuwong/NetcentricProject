@@ -207,6 +207,7 @@ public class GameController_b {
 
 		connectUI.client.sendData("3#"+Long.toString(elapsedTime_player));
 		GameStateUpdate(gamestate.GAME_WAITING);
+		compareScore();
 	}
 
 	public void compareScore(){		//update score if both players finished
@@ -243,7 +244,6 @@ public class GameController_b {
 		return false;
 	}
 	public void startNextGame(){		//when start next game button pushed / received startNextGameData
-		
 		connectUI.client.sendData("4");	
 	}
 	
