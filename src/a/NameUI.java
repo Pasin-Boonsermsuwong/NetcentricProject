@@ -1,9 +1,12 @@
 package a;
-import java.awt.CardLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,8 +25,19 @@ public class NameUI extends JPanel{
 	
 	public static String name;
 	
+	private BufferedImage img ;
+	
 	public NameUI(){
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		try {
+			img = ImageIO.read(getClass().getResource("nameBackground.jpg"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		repaint();
 		
 		JPanel panel = new JPanel();
 		add(panel);
@@ -82,6 +96,11 @@ public class NameUI extends JPanel{
 		gc.gameUI.p1.setText(name);
 //		gc.isFirstPlayer = true;
 		System.out.println("Set name :" + gc.playerName);
+	}
+	
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 	
 	public static void main(String []args){
