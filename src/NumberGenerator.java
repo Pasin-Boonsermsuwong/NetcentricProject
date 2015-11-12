@@ -16,10 +16,8 @@ public class NumberGenerator {
 
 		
 		//System.out.println(calculateAnswer("1+2/2"));
-		Random rand = new Random();
-		for(int i=0;i<100;i++){
-			System.out.println(generate(rand.nextLong(),false).toString());
-		}
+		System.out.println(generate(8888,true).toString());
+		System.out.println(generate(8888,true).toString());
 	//	System.out.println(calculateAnswer("5-3*4-3/9"));
 
 	}
@@ -30,7 +28,7 @@ public class NumberGenerator {
 	 * @return
 	 */
 	public static NumberClass generate(long seed,boolean shuffle){	//INT
-		
+		System.out.println("Generating question with seed: "+seed);
 		NumberClass n = new NumberClass();
 		Random rand = new Random(seed);
 		
@@ -44,7 +42,7 @@ public class NumberGenerator {
 		
 
 		for(int i = 0;i<n.operators.length;i++){
-			int operator = weightedRandom(new int[]{6,6,6,2});
+			int operator = weightedRandom(new int[]{6,6,6,2},rand);
 		//	int operator = weightedRandom(new int[]{6,0,0,0});
 												  //+,-,x,/
 			switch(operator){
@@ -149,7 +147,7 @@ public class NumberGenerator {
 	//	System.out.println(result+" "+result.getClass());
 		return (double) result;
 	}
-	public static int weightedRandom(int[] n){
+	public static int weightedRandom(int[] n,Random r){
 		
 		// Compute the total weight of all items together
 		double totalWeight = 0.0d;
@@ -159,7 +157,7 @@ public class NumberGenerator {
 		}
 		// Now choose a random item
 		int randomIndex = -1;
-		double random = Math.random() * totalWeight;
+		double random = r.nextDouble() * totalWeight;
 		for (int i = 0; i < n.length; ++i)
 		{
 		    random -= n[i];

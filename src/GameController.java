@@ -13,7 +13,7 @@ public class GameController {
 	boolean isServer;
 	
 	final int TURNTIME = 60;
-	boolean isFirstPlayer;
+	boolean isFirstPlayer;		//true for server for first game - only used by server to determine who starts first
 	long seed;
 	String playerName;
 	String opponentName;
@@ -26,9 +26,12 @@ public class GameController {
 	public NameUI nameUI;
 	public ConnectUI connectUI;
 
-	Timer timer;
+//	Timer timer;
 	public long elapsedTime_player;
 	public long elapsedTime_opponent;
+	
+	boolean startNextGame_player;
+	boolean startNextGame_opponent;
 	
 	GameState gamestate;
 
@@ -59,7 +62,7 @@ public class GameController {
 		gc.opponentName = "LEPAN";
 		gc.seed = (long) (Math.random()*900);
 		
-		gameUI.setName(gc.playerName, gc.opponentName);
+	//	gameUI.setName(gc.playerName, gc.opponentName);
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
@@ -72,6 +75,7 @@ public class GameController {
 	}
 
 	public void GameStateUpdate(GameState gs) {
+		gamestate = gs;
 		System.out.println("GameState changed to "+gs);
 		// handle update
 		switch(gs) {
@@ -91,7 +95,7 @@ public class GameController {
 			break;
 		case GAME_FINISHED:
 			mainFrame.changeCard("gameUI");
-			
+			finishedTurn();
 			break;
 		}
 		//TODO: send data TYPE 1/2
@@ -106,6 +110,14 @@ public class GameController {
 		this.gameUI = window;
 		window.gc = this;
 	}
+	public void setPlayerName(String s){
+		this.playerName = s;
+		gameUI.p1.setText(s);
+	}
+	public void setOpponentName(String s){
+		this.opponentName = s;
+		gameUI.p2.setText(s);
+	}
 	/**
 	 * @param isFirstPlayer
 	 */
@@ -117,15 +129,19 @@ public class GameController {
 			GameStateUpdate(GameState.GAME_PLAYING);
 		}else GameStateUpdate(GameState.GAME_WAITING);
 	}
-	private void finishedTurn(){
+	private void finishedTurn(){	//both player finished
 		activeTurn = false;
 		if(gameUI ==null){
 			System.err.println("UIwindow is null in GameController");return;
 		}
+		gameUI.resetAnswerField();
 		gameUI.setEnableOperatorButtons(false);
 		gameUI.setEnableNumberButtons(false);
 		gameUI.setButtons("-");
 		gameUI.currentPlayerLabel.setText("-");
+		
+		gameUI.buttonNextGame.setVisible(true);
+		gameUI.buttonNextGame.setEnabled(true);
 		
 	}
 	private void waitTurn(){	//START WAITING TURN (OTHER PLAYER IS PLAYING)
@@ -133,10 +149,14 @@ public class GameController {
 		if(gameUI ==null){
 			System.err.println("UIwindow is null in GameController");return;
 		}
+		gameUI.resetAnswerField();
 		gameUI.setEnableOperatorButtons(false);
 		gameUI.setEnableNumberButtons(false);
 		gameUI.setButtons("-");
 		gameUI.currentPlayerLabel.setText(opponentName);
+		
+		gameUI.buttonNextGame.setVisible(false);
+		gameUI.buttonNextGame.setEnabled(false);
 	}
 
 	private void startTurn(){	//STARTING PLAYER'S TURN
@@ -144,28 +164,33 @@ public class GameController {
 		if(gameUI ==null){
 			System.err.println("UIwindow is null in GameController");return;
 		}
+		gameUI.resetAnswerField();
 		gameUI.setEnableOperatorButtons(true);
 		gameUI.setEnableNumberButtons(true);
 		gameUI.setQuestion(NumberGenerator.generate(seed,true));
 		gameUI.currentPlayerLabel.setText(playerName);
 		elapsedTime_player = Instant.now().toEpochMilli();
-		timer = new Timer();
+		final Timer timer = new Timer();
+		System.out.println("Timer started");
 		timer.scheduleAtFixedRate(new TimerTask() {
 			int i = TURNTIME;
-			public void run() {
-			//	System.out.println("Time left: "+i--);
+			public void run() {		
+				i--;
+			//	System.out.println("Time left: "+i);
 				gameUI.timeLabel.setText(""+i);
 				if (i<= 0||!activeTurn){
 					if(activeTurn)GameController.this.endTurn(false);
-
 					System.out.println("Timer Stopped");
 					timer.cancel();
+				//	return;
 				}                
 			}
 		}, 0, 1000);
 
+		gameUI.buttonNextGame.setVisible(false);
+		gameUI.buttonNextGame.setEnabled(false);
 	}
-	public void endTurn(boolean FinishOnTime){
+	public void endTurn(boolean FinishOnTime){		//called when complete turn, either by finding correct solution or time out
 		gameUI.timeLabel.setText("-");
 		if(!activeTurn){
 			System.err.println("endTurn called when turn is not active");
@@ -177,13 +202,13 @@ public class GameController {
 		if(FinishOnTime){
 			elapsedTime_player =  Instant.now().toEpochMilli() - elapsedTime_player;
 			System.out.println("Elasped "+elapsedTime_player+" ms");    		
-			JOptionPane.showMessageDialog(null, "Correct Answer!", "", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(gameUI, "Correct Answer!", "", JOptionPane.INFORMATION_MESSAGE);
 		}else{
 			elapsedTime_player = Long.MAX_VALUE;
-			JOptionPane.showMessageDialog(null, "Time is up", "", JOptionPane.INFORMATION_MESSAGE);	
+			JOptionPane.showMessageDialog(gameUI, "Time is up", "", JOptionPane.INFORMATION_MESSAGE);	
 		}
 		System.out.println("Elasped Time: "+elapsedTime_player);
-		compareScore();
+		gameUI.timeLabel.setText("-");
 		//TODO: SEND DATA (type 3 elasped time)
 		
 		//need to check that the player is 'server' or 'client'
@@ -198,23 +223,30 @@ public class GameController {
 			connectUI.client.sendData("3#"+Long.toString(elapsedTime_player));
 			GameStateUpdate(gamestate.GAME_WAITING);
 		}
+		compareScore();
 	}
 
-	//TODO: COMPARE SCORE WHEN RECEIVED TYPE 3
 	public void compareScore(){		//update score if both players finished
 		if(bothPlayerFinished()){
+			double ep = elapsedTime_player/1000.0;
+			double eo = elapsedTime_opponent/1000.0;
 			if(elapsedTime_player==Long.MAX_VALUE&&elapsedTime_opponent==Long.MAX_VALUE){
-				JOptionPane.showMessageDialog(null, "Both players cannot solve","Draw!",  JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(gameUI, "Both players cannot solve","Draw!",  JOptionPane.INFORMATION_MESSAGE);
 			}
 			else if(elapsedTime_player<elapsedTime_opponent){
-				JOptionPane.showMessageDialog(null,  "Your time: "+elapsedTime_player+"\nOpponent time: "+elapsedTime_opponent,"You win!", JOptionPane.INFORMATION_MESSAGE);
-				gameUI.p1score.setText(""+Integer.parseInt(gameUI.p1score.getText()) + 1);
+				gameUI.p1score.setText(""+(Integer.parseInt(gameUI.p1score.getText())+1));
+				if(elapsedTime_opponent==Long.MAX_VALUE){
+					JOptionPane.showMessageDialog(gameUI,  "Your time: "+ep+" s\nOpponent time: "+"Cannot solve","You win!", JOptionPane.INFORMATION_MESSAGE);
+				}else JOptionPane.showMessageDialog(gameUI,  "Your time: "+ep+" s\nOpponent time: "+eo+" s","You win!", JOptionPane.INFORMATION_MESSAGE);
 			}else if(elapsedTime_player>elapsedTime_opponent){
-				JOptionPane.showMessageDialog(null, "Opponent time: "+elapsedTime_opponent+"\nYour time: "+elapsedTime_player,"Opponent wins!",  JOptionPane.INFORMATION_MESSAGE);
-				gameUI.p2score.setText(""+Integer.parseInt(gameUI.p2score.getText()) + 1);
+				gameUI.p2score.setText(""+(Integer.parseInt(gameUI.p2score.getText())+1));
+				if(elapsedTime_player==Long.MAX_VALUE){
+					JOptionPane.showMessageDialog(gameUI, "Opponent time: "+eo+" s\nYour time: "+"Cannot solve","Opponent wins!",  JOptionPane.INFORMATION_MESSAGE);
+				}else JOptionPane.showMessageDialog(gameUI, "Opponent time: "+eo+" s\nYour time: "+ep+" s","Opponent wins!",  JOptionPane.INFORMATION_MESSAGE);	
 			}else if(elapsedTime_player==elapsedTime_opponent){
-				JOptionPane.showMessageDialog(null,  "Both player used "+elapsedTime_player/1000+" sec","Draw!", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(gameUI,  "Both player used "+ep+" s","Draw!", JOptionPane.INFORMATION_MESSAGE);
 			}
+			//RESET SCORE
 			elapsedTime_player = 0;
 			elapsedTime_opponent = 0;
 			GameStateUpdate(gamestate.GAME_FINISHED);
@@ -223,11 +255,35 @@ public class GameController {
 		//TODO: TEST THIS
 	}
 	public boolean bothPlayerFinished(){
+		System.out.println("bothPlayerFinished p:"+elapsedTime_player+" o:"+elapsedTime_opponent);
 		if(elapsedTime_player>0&&elapsedTime_opponent>0)return true;
 		return false;
 	}
-	public void startNextGame(){
+	public void startNextGame(){		//when start next game button pushed / received startNextGameData
 		
+		if(isServer){
+			if(startNextGame_player&&startNextGame_opponent){
+				
+				isFirstPlayer = !isFirstPlayer; 		// Switch who starts first
+				generateSeed();
+				
+				connectUI.server.sendData("2#"+NameUI.name+"#"+seed+"#"+!isFirstPlayer);		//send data for client to initiate second game
+				
+				if(isFirstPlayer){															//initate server's game
+					GameStateUpdate(gamestate.GAME_PLAYING);
+				}else{
+					GameStateUpdate(gamestate.GAME_WAITING);
+				}
+				
+				
+				startNextGame_player = false;
+				startNextGame_opponent = false;
+			}
+			
+
+		}else{
+			connectUI.client.sendData("4");	
+		}
 	}
 	
 	public void isServer(){

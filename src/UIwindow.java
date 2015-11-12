@@ -162,7 +162,7 @@ public class UIwindow extends JPanel {
 		l1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(l1);
 
-		currentPlayerLabel = new JLabel("[Name]");
+		currentPlayerLabel = new JLabel("-");
 		currentPlayerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		currentPlayerLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(currentPlayerLabel);
@@ -180,7 +180,7 @@ public class UIwindow extends JPanel {
 		lblTheResultIs.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(lblTheResultIs);
 
-		resultLabel = new JLabel("[Result]");
+		resultLabel = new JLabel("-");
 		resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		resultLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(resultLabel);
@@ -193,7 +193,7 @@ public class UIwindow extends JPanel {
 		lblTimeLeft.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(lblTimeLeft);
 
-		timeLabel = new JLabel("[Time]");
+		timeLabel = new JLabel("-");
 		timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		timeLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		dataPanel.add(timeLabel);
@@ -299,20 +299,31 @@ public class UIwindow extends JPanel {
 		buttonNextGame = new JButton("START NEXT GAME");
 		buttonNextGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				gc.startNextGame_player = true;
 				gc.startNextGame();
+				((JButton)arg0.getSource()).setEnabled(false);
 			}
 		});
 		buttonNextGame.setVisible(false);
 		buttonNextGame.setEnabled(false);
 		buttonNextGame.setFont(new Font("Tahoma", Font.BOLD, 20));
 		miscPanel.add(buttonNextGame);
+		
+		p1score.setText("0");
+		p2score.setText("0");
 
 	}
+	/*
 	public void setName(String playerName,String opponentName){
 		p1.setText(playerName);
 		p2.setText(opponentName);
 		p1score.setText("0");
 		p2score.setText("0");
+	}
+	*/
+	public void resetAnswerField(){
+		rightField.setText("");
+		leftField.setText("");
 	}
 	public void setQuestion(NumberClass nc){
 		setButtons(nc);
@@ -391,7 +402,7 @@ public class UIwindow extends JPanel {
 			// if all numbers are used, 
 			if(field.length==numbers*2-1){
 				//check if result is correct
-				System.out.println("Final answer = "+rightField.getText()+" : "+resultLabel.getText());
+			//	System.out.println("Final answer = "+rightField.getText()+" : "+resultLabel.getText());
 				if(rightField.getText().equals(resultLabel.getText())){//then popup win message
 					gc.endTurn(true);
 				}			

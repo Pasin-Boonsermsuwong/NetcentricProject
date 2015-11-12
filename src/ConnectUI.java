@@ -38,11 +38,11 @@ public class ConnectUI extends JPanel{
 		this.setLayout(new GridLayout(4,4));
 		initiateGridPanels(4,4);
 		
-		ipTextField = new JTextField();
+		ipTextField = new JTextField("172.17.0.103");		//TODO TEMP
 		panelHolder[1][2].add(ipTextField);
 		ipTextField.setColumns(10);;
 		
-		portTextField = new JTextField();
+		portTextField = new JTextField("2000");				//TODO TEMP
 		panelHolder[2][2].add(portTextField);
 		portTextField.setColumns(10);;
 		
@@ -52,7 +52,7 @@ public class ConnectUI extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+
 				createServer();
 			}
 			
@@ -64,7 +64,7 @@ public class ConnectUI extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+
 				connectToServer(ipTextField.getText(),Integer.parseInt(portTextField.getText()));
 			}
 			

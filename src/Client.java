@@ -46,16 +46,15 @@ public class Client{
 		}
 		thread = new Thread(){
 			public void run(){
-				JOptionPane.showMessageDialog(null,"ClientConnect: "+gc.playerName+"/"+NameUI.name,"",JOptionPane.INFORMATION_MESSAGE);
 				sendData("1#"+gc.playerName);
 				while(ConnectUI.connected){
 					String receivedMSG = "";
-					System.out.println("Client Ready to receive message");
+				//	System.out.println("Client Ready to receive message");
 					try {
 						receivedMSG = br.readLine();
 					} catch (IOException e) {
-
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(gc.gameUI, e.getMessage(),e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
+						System.exit(0);
 					}
 					System.out.println("Client received msg : " + receivedMSG);
 					if(receivedMSG == ConnectUI.END_MESSAGE){
@@ -68,7 +67,7 @@ public class Client{
 			}
 		};
 		gc = MainFrame.gc;
-		gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+		//gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 		thread.start();
 	}
 	
@@ -79,27 +78,32 @@ public class Client{
 	public void decipherData(String data){
 		
 		String[] d = data.split("#");
-		System.out.println("Client received: "+Arrays.toString(d));
 		/*
 			TYPE 1 = name
-			TYPE 2 = seed,name
+			TYPE 2 = seed,name,isFirstPlayer			// game initializer
 			TYPE 3 = elaspedTime
 		*/
 		switch(d[0]){
-			case "1":
-				gc.opponentName = d[1];//flow c - set gc.p2 - OPPONENT NAME
+			case "1":	//CLIENT TELL SERVER THEIR NAME
+				gc.setOpponentName(d[1]);//flow c - set gc.p2 - OPPONENT NAME
 				gc.generateSeed();//flow d - generate seed
-				sendData("2#"+NameUI.name+"#"+gc.seed);// flow e - send type 2
-				gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
-
+				sendData("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer);// flow e - send type 2
+				if(gc.isFirstPlayer){
+					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
+				}else{
+					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+				}
 				break;
-			case "2":
-				gc.opponentName = d[1];//flow g
+			case "2":	//SERVER REMOTELY INITIALIZE CLIENT'S GAME
+				gc.setOpponentName(d[1]);//flow g
 				gc.seed=Long.parseLong(d[2]);
-				gc.GameStateUpdate(gc.gamestate.GAME_WAITING);//flow h?
-
+				if(Boolean.parseBoolean(d[3])){
+					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+				}else{
+					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+				}
 				break;
-			case "3":
+			case "3":	//SERVER/CLIENT TELL THEY FINISHED TURN
 				//flow k
 				gc.elapsedTime_opponent = Long.parseLong(d[1]);
 				//flow l
@@ -108,6 +112,10 @@ public class Client{
 				}else{
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 				}
+				break;
+			case "4":	//CLIENT TELL TO START NEXT GAME
+				gc.startNextGame_opponent = true;
+				gc.startNextGame();
 				break;
 			default:
 				System.err.println("Unknown data type");
