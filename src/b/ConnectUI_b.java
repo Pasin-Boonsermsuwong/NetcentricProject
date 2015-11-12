@@ -15,25 +15,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import a.Client;
-import a.ConnectUI;
-import a.GameController;
-import a.Server;
-
 public class ConnectUI_b extends JPanel{
 	public GameController_b gc;
 	private JPanel contentPane;
 	private JPanel[][] panelHolder = new JPanel[4][4]; 
 	private JLabel ipLabel,portLabel;
 	private JTextField ipTextField,portTextField;
-	private JButton go,connect;
-	
-	//Server
-	private ServerSocket serverSocket;
-	public Server server;
+	private JButton connect;
 	
 	//Client
-	public Client client;
+	public Client_b client;
 	
 	public static boolean connected = true;
 	public static final String END_MESSAGE = "ENDCONNECTION.";
@@ -59,17 +50,6 @@ public class ConnectUI_b extends JPanel{
 		panelHolder[2][2].add(portTextField);
 		portTextField.setColumns(10);;
 		
-		go = new JButton("Create Server");
-		panelHolder[3][1].add(go);
-		go.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				createServer();
-			}
-			
-		});
 		
 		connect = new JButton("Connect");
 		panelHolder[3][2].add(connect);
@@ -93,37 +73,9 @@ public class ConnectUI_b extends JPanel{
 			}
 	}
 	
-	private void createServer(){
-		System.out.println("Creating server...");
-		try {
-			InetAddress addr= InetAddress.getLocalHost();
-			String hostAddress = addr.getHostAddress();
-			String hostName = addr.getHostName();
-			//System.out.println(addr.toString());
-			System.out.println(hostAddress);
-			//System.out.println(hostName);
-			serverSocket = new ServerSocket(PORT,50,addr);
-			
-			//serverSocket = new ServerSocket(PORT);
-			server = new Server(serverSocket);
-		}catch (BindException e){
-			JOptionPane.showMessageDialog(null, "Address already in use", "", JOptionPane.ERROR_MESSAGE);
-		}catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
 	private void connectToServer(String IP,int port){
 		System.out.println("Connecting to server "+IP);
-		client = new Client(IP,port);
+		client = new Client_b(IP,port);
 	}
-	
-	public static void main (String [] args){
-		JFrame frame= new JFrame();
-		frame.add(new ConnectUI());
-		frame.setSize(500, 500);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
+
 }
