@@ -20,7 +20,7 @@ public class ConnectUI_b extends JPanel{
 	private JPanel contentPane;
 	private JPanel[][] panelHolder = new JPanel[4][4]; 
 	private JLabel ipLabel,portLabel;
-	private JTextField ipTextField,portTextField;
+	private JTextField portTextField;
 	private JButton connect;
 	
 	//Client
@@ -35,7 +35,7 @@ public class ConnectUI_b extends JPanel{
 		initiateGridPanels(4,4);
 		
 		ipLabel = new JLabel();
-		ipLabel.setText("IP  :");
+	//	ipLabel.setText("IP  :");
 		panelHolder[1][1].add(ipLabel);
 		
 		portLabel = new JLabel();
@@ -43,8 +43,8 @@ public class ConnectUI_b extends JPanel{
 		panelHolder[2][1].add(portLabel);
 		
 	//	ipTextField = new JTextField("169.254.80.80");		//TODO TEMP
-		panelHolder[1][2].add(ipTextField);
-		ipTextField.setColumns(10);;
+	//	panelHolder[1][2].add(ipTextField);
+		//ipTextField.setColumns(10);;
 		
 		portTextField = new JTextField("2000");				//TODO TEMP
 		panelHolder[2][2].add(portTextField);
@@ -58,7 +58,7 @@ public class ConnectUI_b extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				connectToServer(ipTextField.getText(),Integer.parseInt(portTextField.getText()));
+				connectToServer("",Integer.parseInt(portTextField.getText()));
 			}
 			
 		});

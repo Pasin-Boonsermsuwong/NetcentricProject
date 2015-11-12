@@ -8,8 +8,6 @@ import java.net.Socket;
 
 import javax.swing.JOptionPane;
 
-import a.GameController;
-import a.NameUI;
 
 
 public class MiniServer_b extends Thread{
@@ -67,10 +65,10 @@ public class MiniServer_b extends Thread{
 				gc.generateSeed();//flow d - generate seed
 				System.out.println("Send ID :"+id);
 				gc.serverID = id;
-				sendData("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);// flow e - send type 2
-				String sent = "2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id;
+				sendData("2#"+NameUI_b.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);// flow e - send type 2
+				String sent = "2#"+NameUI_b.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id;
 				String [] split = sent.split("#");
-				System.out.println("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);
+				System.out.println("2#"+NameUI_b.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);
 				System.out.println("Split = "+split[0]+" "+split[1]+" "+split[2]+" "+split[3]+" "+split[4]);
 				if(gc.isFirstPlayer){
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE

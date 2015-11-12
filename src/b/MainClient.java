@@ -19,8 +19,6 @@ public class MainClient extends JFrame {
 	public NameUI_b nameUI = new NameUI_b();
 	public ConnectUI_b connectUI = new ConnectUI_b();
 	public WelcomeUI_b welcomeUI = new WelcomeUI_b();
-	
-	
 	public static GameController_b gc;
 
 	public static void main(String[] args) {
