@@ -35,8 +35,6 @@ public class MainClient extends JFrame {
 	public ConnectUI connectUI = new ConnectUI();
 	public WelcomeUI welcomeUI = new WelcomeUI();
 	
-	
-	public static GameController gc;
 	private Socket socket;
 	private InputStreamReader isr;
 	private BufferedReader br;
@@ -46,11 +44,33 @@ public class MainClient extends JFrame {
 	
 	private String serverName;
 	
-	private GameController gc;
-	
 	private int id=0;
 	
-	public Client(String IP, int port){
+	public static void main(String[] args) {
+
+		GameController_b gc = new GameController_b();
+		MainClient frame;
+		frame = new MainClient();
+		frame.setVisible(true);	
+		
+		setGc(new GameController());
+		gc.gameUI = frame.gameUI;
+		gc.nameUI = frame.nameUI;
+		gc.connectUI = frame.connectUI;
+		gc.welcomeUI = frame.welcomeUI;
+
+		frame.gameUI.gc = getGc();
+		frame.nameUI.gc = getGc();
+		frame.connectUI.gc = getGc();
+		frame.welcomeUI.gc = getGc();
+
+	//	frame.changeCard("gameUI");
+	}
+
+	public MainClient(){
+		String IP = null;
+		String port = "2000";
+		initGUI();
 		try {
 			socket = new Socket();
 			InetAddress addr = InetAddress.getByName(IP);
@@ -72,14 +92,14 @@ public class MainClient extends JFrame {
 		}
 		thread = new Thread(){
 			public void run(){
-				sendData("1#"+gc.playerName);
+				sendData("1#"+getGc().playerName);
 				while(ConnectUI.connected){
 					String receivedMSG = "";
 				//	System.out.println("Client Ready to receive message");
 					try {
 						receivedMSG = br.readLine();
 					} catch (IOException e) {
-						JOptionPane.showMessageDialog(gc.gameUI, e.getMessage(),e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(getGc().gameUI, e.getMessage(),e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
 						System.exit(0);
 					}
 					System.out.println("Client received msg : " + receivedMSG);
@@ -92,7 +112,6 @@ public class MainClient extends JFrame {
 				}
 			}
 		};
-		gc = MainFrame.gc;
 		//gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 		thread.start();
 	}
@@ -111,41 +130,41 @@ public class MainClient extends JFrame {
 		*/
 		switch(d[0]){
 			case "1":	//CLIENT TELL SERVER THEIR NAME
-				gc.setOpponentName(d[1]);//flow c - set gc.p2 - OPPONENT NAME
-				gc.generateSeed();//flow d - generate seed
-				sendData("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+id);// flow e - send type 2
-				if(gc.isFirstPlayer){
-					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
+				getGc().setOpponentName(d[1]);//flow c - set gc.p2 - OPPONENT NAME
+				getGc().generateSeed();//flow d - generate seed
+				sendData("2#"+NameUI.name+"#"+getGc().seed+"#"+!getGc().isFirstPlayer+id);// flow e - send type 2
+				if(getGc().isFirstPlayer){
+					getGc().GameStateUpdate(getGc().gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
 				}else{
-					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+					getGc().GameStateUpdate(getGc().gamestate.GAME_WAITING);
 				}
 				break;
 			case "2":	//SERVER REMOTELY INITIALIZE CLIENT'S GAME
-				gc.setOpponentName(d[1]);//flow g
-				gc.seed=Long.parseLong(d[2]);
+				getGc().setOpponentName(d[1]);//flow g
+				getGc().seed=Long.parseLong(d[2]);
 				if (this.id == 0){
 					this.id =Integer.parseInt(d[4]);
-					gc.clientID = this.id;
+					getGc().clientID = this.id;
 				}
 				if(Boolean.parseBoolean(d[3])){
-					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+					getGc().GameStateUpdate(getGc().gamestate.GAME_PLAYING);
 				}else{
-					gc.GameStateUpdate(gc.gamestate.GAME_WAITING);
+					getGc().GameStateUpdate(getGc().gamestate.GAME_WAITING);
 				}
 				break;
 			case "3":	//SERVER/CLIENT TELL THEY FINISHED TURN
 				//flow k
-				gc.elapsedTime_opponent = Long.parseLong(d[1]);
+				getGc().elapsedTime_opponent = Long.parseLong(d[1]);
 				//flow l
-				if(gc.bothPlayerFinished()){
-					gc.compareScore();
+				if(getGc().bothPlayerFinished()){
+					getGc().compareScore();
 				}else{
-					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
+					getGc().GameStateUpdate(getGc().gamestate.GAME_PLAYING);
 				}
 				break;
 			case "4":	//CLIENT TELL TO START NEXT GAME
-				gc.startNextGame_opponent = true;
-				gc.startNextGame();
+				getGc().startNextGame_opponent = true;
+				getGc().startNextGame();
 				break;
 			default:
 				System.err.println("Unknown data type");
@@ -153,30 +172,7 @@ public class MainClient extends JFrame {
 		}
 	}
 	
-	public static void main(String[] args) {
 
-		MainFrame frame;
-		frame = new MainFrame();
-		frame.setVisible(true);	
-		
-		gc = new GameController();
-		gc.mainFrame = frame;
-		gc.gameUI = frame.gameUI;
-		gc.nameUI = frame.nameUI;
-		gc.connectUI = frame.connectUI;
-		gc.welcomeUI = frame.welcomeUI;
-
-		frame.gameUI.gc = gc;
-		frame.nameUI.gc = gc;
-		frame.connectUI.gc = gc;
-		frame.welcomeUI.gc = gc;
-
-	//	frame.changeCard("gameUI");
-	}
-
-	public MainFrame() {
-		initGUI();
-	}
 	private void initGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 500);
@@ -193,6 +189,14 @@ public class MainClient extends JFrame {
 	void changeCard(String cardName){
 		System.out.println("Showing "+cardName);
 		cl.show(contentPane, cardName);
+	}
+
+	public GameController_b getGc() {
+		return gc;
+	}
+
+	public void setGc(GameController_b gc) {
+		this.gc = gc;
 	}
 	
 }
