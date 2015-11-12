@@ -5,8 +5,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
@@ -34,6 +36,7 @@ public class Client{
 			System.out.println("HostAddress = "+addr.getHostAddress());
 			String hostName = addr.getHostName();
 			socket.connect(new InetSocketAddress(hostName,port), 30);
+		//	socket.connect(new InetSocketAddress(this.getIp(),port), 30);
 			isr = new InputStreamReader(socket.getInputStream());
 			br = new BufferedReader(isr);
 			pw = new PrintWriter(socket.getOutputStream());
@@ -129,4 +132,38 @@ public class Client{
 				break;
 		}
 	}
+    public static String getIp(){
+        URL whatismyip = null;
+		try {
+			whatismyip = new URL("http://checkip.amazonaws.com");
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+        BufferedReader in = null;
+        try {
+            try {
+				in = new BufferedReader(new InputStreamReader(
+				        whatismyip.openStream()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            String ip = null;
+			try {
+				ip = in.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            return ip;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

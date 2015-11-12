@@ -14,13 +14,19 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.SwingConstants;
+import javax.swing.Box;
+import java.awt.Dimension;
+import java.awt.Font;
 
 public class ConnectUI_b extends JPanel{
+	
+
 	public GameController_b gc;
 	private JPanel contentPane;
-	private JPanel[][] panelHolder = new JPanel[4][4]; 
-	private JLabel ipLabel,portLabel;
-	private JTextField portTextField;
 	private JButton connect;
 	
 	//Client
@@ -29,53 +35,51 @@ public class ConnectUI_b extends JPanel{
 	public static boolean connected = true;
 	public static final String END_MESSAGE = "ENDCONNECTION.";
 	public static final int PORT = 2000;
+	private JLabel noteLabel;
+	private Component rigidArea;
 	
 	public ConnectUI_b(){
-		this.setLayout(new GridLayout(4,4));
-		initiateGridPanels(4,4);
-		
-		ipLabel = new JLabel();
-	//	ipLabel.setText("IP  :");
-		panelHolder[1][1].add(ipLabel);
-		
-		portLabel = new JLabel();
-		portLabel.setText("Port:");
-		panelHolder[2][1].add(portLabel);
-		
-	//	ipTextField = new JTextField("169.254.80.80");		//TODO TEMP
-	//	panelHolder[1][2].add(ipTextField);
-		//ipTextField.setColumns(10);;
-		
-		portTextField = new JTextField("2000");				//TODO TEMP
-		panelHolder[2][2].add(portTextField);
-		portTextField.setColumns(10);;
+		initGUI();
+	}
+	private void initGUI() {
+		;
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		
-		connect = new JButton("Connect");
-		panelHolder[3][2].add(connect);
+		connect = new JButton("Connect to game Server");
+		connect.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(connect);
 		connect.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				connectToServer("",Integer.parseInt(portTextField.getText()));
+				connectToServer();
 			}
 			
 		});
-	}
-	
-	private void initiateGridPanels(int row,int col){
-		for(int m = 0; m < row; m++) {
-			   for(int n = 0; n < col; n++) {
-			      panelHolder[m][n] = new JPanel();
-			      this.add(panelHolder[m][n]);
-			   }
-			}
-	}
-	
-	private void connectToServer(String IP,int port){
-		System.out.println("Connecting to server "+IP);
-		client = new Client_b(IP,port);
+		
+		rigidArea = Box.createRigidArea(new Dimension(20, 100));
+		add(rigidArea);
+		
+		noteLabel = new JLabel("");
+		noteLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		noteLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(noteLabel);
 	}
 
+	private void connectToServer(){
+	//	System.out.println("Connecting to server ");
+		client = new Client_b();
+		if(client.isConnected){
+			connect.setEnabled(false);
+			noteLabel.setText("Waiting for other player");
+		}
+	}
+
+	public void resetState(){
+		connect.setEnabled(true);
+		noteLabel.setText("");
+	}
 }

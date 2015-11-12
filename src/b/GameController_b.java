@@ -27,7 +27,7 @@ public class GameController_b {
 	int scoreOpponent = 0;
 	boolean activeTurn = false;
 
-	public MainClient mainClient;
+	public MainClient_b mainClient;
 	public GameUI_b gameUI;
 	public NameUI_b nameUI;
 	public ConnectUI_b connectUI;

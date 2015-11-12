@@ -10,12 +10,16 @@ import java.util.ArrayList;
 
 public 	class Server_b{
 
-	private Thread threadReceive;
 	private static Thread serverThread;
 	
-	private ServerSocket serverSocket;
+//	private ServerSocket serverSocket;
 	private Socket socket;
+	
+	
 	public ArrayList<MiniServer_b> socketList = new ArrayList<MiniServer_b>();
+	public int[] gamePairs;
+	
+	
 	private InputStreamReader isr;
 	private BufferedReader br;
 	private PrintWriter pw;
@@ -24,6 +28,7 @@ public 	class Server_b{
 	private int id =1;
 	
 	private MiniServer_b miniServer;
+	public MainServer_b mainServer;
 	
 	public Server_b(ServerSocket serverSocket){
 		System.out.println("IP = "+serverSocket.getInetAddress());
@@ -31,7 +36,7 @@ public 	class Server_b{
 		System.out.println("HostAddress = "+serverSocket.getInetAddress().getHostAddress());
 		System.out.println("HostName = "+serverSocket.getInetAddress().getHostName());
 		System.out.println("LocalSocketAddress = "+serverSocket.getLocalSocketAddress().toString());
-		this.serverSocket = serverSocket;
+	//	this.serverSocket = serverSocket;
 		serverThread = new Thread(){
 			public void run(){
 				while(this.isInterrupted()== false){
@@ -51,12 +56,30 @@ public 	class Server_b{
 			}
 		};
 		serverThread.start();
+		Thread updateThread = new Thread(){
+			public void run(){
+				while(this.isInterrupted()== false){
+					update();
+				}
+			}
+		};
+		updateThread.start();
 	}
+	
+	public void update(){
+		if(mainServer == null) return;
+		mainServer.updatePlayerCount(getClients());
+		for(int i = 0;i<getClients();i++){
+			
+		}
+
+	}
+	
 	
 	public void closeServerThread(){
 		serverThread.interrupt();
 	}
-	/*
+	
 	
 	//return number of clients
 	 public int getClients(){
@@ -64,9 +87,9 @@ public 	class Server_b{
 	 }
 	 
 	 //reuturn Socket of index i
-	 public Socket getClient(int index){
+	 public MiniServer_b getClient(int index){
 		 return socketList.get(index);
 	 }
 	 
-	 */
+	 
 }

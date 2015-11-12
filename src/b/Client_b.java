@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 public class Client_b{
 
+	public boolean isConnected = false;
 	private Socket socket;
 	private InputStreamReader isr;
 	private BufferedReader br;
@@ -27,10 +28,13 @@ public class Client_b{
 	
 	private int id=0;
 	
-	public Client_b(String IP, int port){
+	public Client_b(){
+		String IP = null;
+		int port = 2000;
 		try {
 			socket = new Socket();
-			InetAddress addr = InetAddress.getByName(IP);
+			InetAddress addr= InetAddress.getLocalHost();
+			String hostAddress = addr.getHostAddress();
 			System.out.println("HostAddress = "+addr.getHostAddress());
 			String hostName = addr.getHostName();
 			socket.connect(new InetSocketAddress(hostName,port), 30);
@@ -69,7 +73,8 @@ public class Client_b{
 				}
 			}
 		};
-		gc = MainClient.gc;
+		isConnected =true;
+		gc = MainClient_b.gc;
 		//gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 		thread.start();
 	}

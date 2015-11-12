@@ -11,7 +11,7 @@ import java.awt.CardLayout;
 import java.util.Arrays;
 
 
-public class MainClient extends JFrame {
+public class MainClient_b extends JFrame {
 
 	private JPanel contentPane;
 	public CardLayout cl = new CardLayout(0,0);
@@ -23,8 +23,8 @@ public class MainClient extends JFrame {
 
 	public static void main(String[] args) {
 
-		MainClient frame;
-		frame = new MainClient();
+		MainClient_b frame;
+		frame = new MainClient_b();
 		frame.setVisible(true);	
 		
 		gc = new GameController_b();
@@ -42,7 +42,7 @@ public class MainClient extends JFrame {
 	//	frame.changeCard("gameUI");
 	}
 
-	public MainClient() {
+	public MainClient_b() {
 		initGUI();
 	}
 	private void initGUI() {
