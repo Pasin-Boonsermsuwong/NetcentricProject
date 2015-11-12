@@ -16,6 +16,8 @@ public class MiniServer extends Thread{
 	
 	GameController gc;
 	
+	int id = 0;
+	
 	public MiniServer(Socket socket){
 		this.socket = socket;
 		gc = MainFrame.gc;
@@ -49,7 +51,7 @@ public class MiniServer extends Thread{
 	}
 	public void decipherData(String data){
 		
-		String[] d = data.split("#");
+		String[] d = data.split("#");	
 		/*
 			TYPE 1 = name
 			TYPE 2 = seed,name,isFirstPlayer			// game initializer
@@ -59,7 +61,13 @@ public class MiniServer extends Thread{
 			case "1":	//CLIENT TELL SERVER THEIR NAME
 				gc.setOpponentName(d[1]);//flow c - set gc.p2 - OPPONENT NAME
 				gc.generateSeed();//flow d - generate seed
-				sendData("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer);// flow e - send type 2
+				System.out.println("Send ID :"+id);
+				gc.serverID = id;
+				sendData("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);// flow e - send type 2
+				String sent = "2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id;
+				String [] split = sent.split("#");
+				System.out.println("2#"+NameUI.name+"#"+gc.seed+"#"+!gc.isFirstPlayer+"#"+id);
+				System.out.println("Split = "+split[0]+" "+split[1]+" "+split[2]+" "+split[3]+" "+split[4]);
 				if(gc.isFirstPlayer){
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);//flow f -setState active turn NOT SURE
 				}else{
@@ -69,6 +77,8 @@ public class MiniServer extends Thread{
 			case "2":	//SERVER REMOTELY INITIALIZE CLIENT'S GAME
 				gc.setOpponentName(d[1]);//flow g
 				gc.seed=Long.parseLong(d[2]);
+				id =Integer.parseInt(d[4]);
+				gc.clientID = id;
 				if(Boolean.parseBoolean(d[3])){
 					gc.GameStateUpdate(gc.gamestate.GAME_PLAYING);
 				}else{

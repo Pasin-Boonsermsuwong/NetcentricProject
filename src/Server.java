@@ -18,7 +18,7 @@ public class Server{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
-	private ArrayList<MiniServer> socketList = new ArrayList<MiniServer>();
+	public ArrayList<MiniServer> socketList = new ArrayList<MiniServer>();
 	private InputStreamReader isr;
 	private BufferedReader br;
 	private PrintWriter pw;
@@ -26,6 +26,8 @@ public class Server{
 	//private String clientName;
 	//private boolean receivedMessageBoolean = false;
 	private GameController gc;
+	
+	private int id =1;
 	
 	private MiniServer miniServer;
 	
@@ -46,6 +48,7 @@ public class Server{
 						socket = serverSocket.accept();
 						System.out.println("Server is connected to a socket");
 						miniServer = new MiniServer(socket);
+						miniServer.id = id++;
 						socketList.add(miniServer);
 						miniServer.start();
 					} catch (IOException e) {

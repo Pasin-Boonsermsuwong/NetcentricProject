@@ -35,6 +35,9 @@ public class GameController {
 	boolean startNextGame_opponent;
 	
 	GameState gamestate;
+	
+	public int serverID = 0;
+	public int clientID = 0;
 
 	public enum GameState {
 		WELCOME_SCREEN,
@@ -224,7 +227,16 @@ public class GameController {
 		//for now ku added the boolean
 		if(isServer){
 			//flow i
-			connectUI.server.sendData("3#"+Long.toString(elapsedTime_player));
+			int total = connectUI.server.socketList.size();
+			System.out.println("Total = "+total);
+			for (int i = 0;i < total;i++){
+				System.out.println("miniserver id ="+connectUI.server.socketList.get(i).id);
+				System.out.println("server id ="+this.serverID);
+				if(connectUI.server.socketList.get(i).id == this.serverID ){
+					connectUI.server.socketList.get(i).sendData("3#"+Long.toString(elapsedTime_player));
+				}
+			}
+			//connectUI.server.sendData("3#"+Long.toString(elapsedTime_player));
 			//flow j
 			GameStateUpdate(gamestate.GAME_WAITING);
 		}else{
@@ -275,7 +287,15 @@ public class GameController {
 				isFirstPlayer = !isFirstPlayer; 		// Switch who starts first
 				generateSeed();
 				
-				connectUI.server.sendData("2#"+NameUI.name+"#"+seed+"#"+!isFirstPlayer);		//send data for client to initiate second game
+				int total = connectUI.server.socketList.size();
+				for (int i = 0;i < total;i++){
+				//	System.out.println(connectUI.server.socketList.get(i).id);
+				//	System.out.println(serverID);
+					if(connectUI.server.socketList.get(i).id == serverID ){
+						connectUI.server.socketList.get(i).sendData("2#"+NameUI.name+"#"+seed+"#"+!isFirstPlayer+"#"+serverID);
+					}
+				}
+				//connectUI.server.sendData("2#"+NameUI.name+"#"+seed+"#"+!isFirstPlayer);		//send data for client to initiate second game
 				
 				if(isFirstPlayer){															//initate server's game
 					GameStateUpdate(gamestate.GAME_PLAYING);

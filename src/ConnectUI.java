@@ -46,7 +46,7 @@ public class ConnectUI extends JPanel{
 		portLabel.setText("Port:");
 		panelHolder[2][1].add(portLabel);
 		
-		ipTextField = new JTextField("172.17.0.103");		//TODO TEMP
+		ipTextField = new JTextField("169.254.80.80");		//TODO TEMP
 		panelHolder[1][2].add(ipTextField);
 		ipTextField.setColumns(10);;
 		
