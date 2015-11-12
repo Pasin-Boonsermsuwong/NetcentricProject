@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
 	public UIwindow gameUI = new UIwindow();
 	public NameUI nameUI = new NameUI();
 	public ConnectUI connectUI = new ConnectUI();
+	public WelcomeUI welcomeUI = new WelcomeUI();
 	
 	
 	public static GameController gc;
@@ -32,10 +33,12 @@ public class MainFrame extends JFrame {
 		gc.gameUI = frame.gameUI;
 		gc.nameUI = frame.nameUI;
 		gc.connectUI = frame.connectUI;
+		gc.welcomeUI = frame.welcomeUI;
 
 		frame.gameUI.gc = gc;
 		frame.nameUI.gc = gc;
 		frame.connectUI.gc = gc;
+		frame.welcomeUI.gc = gc;
 
 	//	frame.changeCard("gameUI");
 	}
@@ -50,6 +53,7 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(cl);
+		contentPane.add(welcomeUI,"welcomeUI");
 		contentPane.add(nameUI, "nameUI");
 		contentPane.add(connectUI,"connectUI");
 		contentPane.add(gameUI,"gameUI");		

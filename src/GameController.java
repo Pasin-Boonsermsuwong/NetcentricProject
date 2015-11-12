@@ -25,6 +25,7 @@ public class GameController {
 	public UIwindow gameUI;
 	public NameUI nameUI;
 	public ConnectUI connectUI;
+	public WelcomeUI welcomeUI;
 
 //	Timer timer;
 	public long elapsedTime_player;
@@ -36,6 +37,7 @@ public class GameController {
 	GameState gamestate;
 
 	public enum GameState {
+		WELCOME_SCREEN,
 		ENTER_NAME,
 		ENTER_IP,
 		GAME_WAITING,
@@ -79,6 +81,8 @@ public class GameController {
 		System.out.println("GameState changed to "+gs);
 		// handle update
 		switch(gs) {
+		case WELCOME_SCREEN:
+			mainFrame.changeCard("welcomeUI");
 		case ENTER_NAME:
 			mainFrame.changeCard("nameUI");
 			break;

@@ -38,6 +38,14 @@ public class ConnectUI extends JPanel{
 		this.setLayout(new GridLayout(4,4));
 		initiateGridPanels(4,4);
 		
+		ipLabel = new JLabel();
+		ipLabel.setText("IP  :");
+		panelHolder[1][1].add(ipLabel);
+		
+		portLabel = new JLabel();
+		portLabel.setText("Port:");
+		panelHolder[2][1].add(portLabel);
+		
 		ipTextField = new JTextField("172.17.0.103");		//TODO TEMP
 		panelHolder[1][2].add(ipTextField);
 		ipTextField.setColumns(10);;
