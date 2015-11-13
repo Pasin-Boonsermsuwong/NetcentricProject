@@ -127,9 +127,10 @@ public class Client_b{
 				gc.startNextGame();
 				break;
 			case "5":
+				
 				if(gc.gamestate == gc.gamestate.GAME_PLAYING||gc.gamestate == gc.gamestate.GAME_WAITING){
-					JOptionPane.showMessageDialog(gc.gameUI,"Game forced reset by server","", JOptionPane.INFORMATION_MESSAGE);
 					gc.setScore(0,0);	
+					JOptionPane.showMessageDialog(gc.gameUI,"Game forced reset by server","", JOptionPane.INFORMATION_MESSAGE);		
 					gc.resetGame();
 					gc.activeTurn = false;
 				}	
