@@ -37,6 +37,9 @@ public class ConnectUI_b extends JPanel{
 	public static final int PORT = 2000;
 	private JLabel noteLabel;
 	private Component rigidArea;
+	private JPanel panel;
+	private JLabel lblNewLabel;
+	private JTextField ipField;
 	
 	public ConnectUI_b(){
 		initGUI();
@@ -67,11 +70,23 @@ public class ConnectUI_b extends JPanel{
 		noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		noteLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		add(noteLabel);
+		
+		panel = new JPanel();
+		add(panel);
+		
+		lblNewLabel = new JLabel("IP: ");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel.add(lblNewLabel);
+		
+		ipField = new JTextField();
+		ipField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panel.add(ipField);
+		ipField.setColumns(10);
 	}
 
 	private void connectToServer(){
 	//	System.out.println("Connecting to server ");
-		client = new Client_b();
+		client = new Client_b(ipField.getText());
 		if(client.isConnected){
 			connect.setEnabled(false);
 			noteLabel.setText("Waiting for other player");

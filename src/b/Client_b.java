@@ -29,8 +29,8 @@ public class Client_b{
 	private GameController_b gc;
 //	private int id=0;
 	
-	public Client_b(){
-		String IP = null;
+	public Client_b(String s){
+		String IP = s;
 		int port = 2000;
 		try {
 			socket = new Socket();
