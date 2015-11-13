@@ -95,10 +95,12 @@ public class GameController {
 			break;
 		case GAME_WAITING:
 			mainFrame.changeCard("gameUI");
+			MainFrame.musicStop();
 			waitTurn();
 			break;
 		case GAME_PLAYING:
 			mainFrame.changeCard("gameUI");
+			MainFrame.musicStop();
 			startTurn();
 			break;
 		case GAME_FINISHED:
