@@ -22,6 +22,9 @@ import a.MiniServer;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class MainServer_b extends JFrame {
@@ -33,6 +36,7 @@ public class MainServer_b extends JFrame {
 	private JLabel lblNewLabel_1;
 	private JLabel countLabel;
 	private JPanel panel;
+	private JButton resetButton;
 	
 	/**
 	 * Launch the application.
@@ -63,6 +67,14 @@ public class MainServer_b extends JFrame {
 		
 		panel = new JPanel();
 		contentPane.add(panel, BorderLayout.SOUTH);
+		
+		resetButton = new JButton("Reset Games");
+		resetButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				server.resetGames();
+			}
+		});
+		panel.add(resetButton);
 		
 		lblNewLabel_1 = new JLabel("Player count: ");
 		panel.add(lblNewLabel_1);

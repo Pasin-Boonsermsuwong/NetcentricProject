@@ -18,8 +18,8 @@ public class GameController {
 	long seed;
 	String playerName;
 	String opponentName;
-	int scorePlayer = 0;
-	int scoreOpponent = 0;
+//	int scorePlayer = 0;
+//	int scoreOpponent = 0;
 	boolean activeTurn = false;
 
 	public MainFrame mainFrame;

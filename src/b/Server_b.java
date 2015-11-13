@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import a.NumberGenerator;
@@ -62,12 +63,20 @@ public 	class Server_b{
 	}
 	
 	public void decipherData(String s,MiniServer_b mini){
-		String[] d = s.split("#");	
+		
+		String[] d = s.split("#");
+		System.out.println(Arrays.toString(d));
+		if(d.length<=1){
+			destroy(mini.id);
+			return;
+		}
 		/*
 			TYPE 1 = ID,type,name
-			TYPE 2 = ID,type,seed,name,isFirstPlayer			// game initializer
+			TYPE 2 = ID,type,seed,name,isFirstPlayer			INITIALIZE GAME
 			TYPE 3 = ID,type,elaspedTime
 			TYPE 4 = ID,type		- want to start next game
+			TYPE 5 = reset score
+			TYPE 6 = pair disconnected - BACK TO MAIN MENU
 		*/
 		switch(d[1]){
 			case "1":	//CLIENT TELL SERVER THEIR NAME, ALSO MEANS WAITING TO PLAY
@@ -93,8 +102,12 @@ public 	class Server_b{
 						long seed = r.nextLong();
 						boolean firstplayer = r.nextBoolean();
 					
+						mini.firstPlayer = firstplayer;
 						mini.sendData("2#"+seed+"#"+mini2.name+"#"+firstplayer);
+						mini2.firstPlayer = !firstplayer;
 						mini2.sendData("2#"+seed+"#"+mini.name+"#"+!firstplayer);
+						mini.startNextGame = false;
+						mini2.startNextGame = false;
 					}
 				}
 				
@@ -117,10 +130,11 @@ public 	class Server_b{
 					
 					Random r = new Random();
 					long seed = r.nextLong();
-					boolean firstplayer = r.nextBoolean();
 				
-					mini.sendData("2#"+seed+"#"+mini2.name+"#"+firstplayer);
-					mini2.sendData("2#"+seed+"#"+mini.name+"#"+!firstplayer);
+					mini.sendData("2#"+seed+"#"+mini2.name+"#"+!mini.firstPlayer);
+					mini2.sendData("2#"+seed+"#"+mini.name+"#"+!mini2.firstPlayer);
+					mini.startNextGame = false;
+					mini2.startNextGame = false;
 				}
 				break;
 			default:
@@ -155,5 +169,48 @@ public 	class Server_b{
 			 if(socketList.get(i).id==ID)return socketList.get(i);
 		 }
 		 return null;
+	 }
+	 
+	 /** remove a client from socketList (list of clients)
+	 * @param id
+	 */
+	public void destroy(int id){
+		 System.out.println("Destroy client ID: "+id);
+		 MiniServer_b mini = getClient(id);
+		 if(mini!=null&&mini.id_pair!=-1){		// TELL PAIR THAT PAIR HAS DISCONNECTED
+			 MiniServer_b mini2 = getClient(mini.id_pair);
+			 if(mini2 !=null){
+				 mini2.state = ClientState.NON;
+				 mini2.sendData("6");
+			 }
+		 }
+		 socketList.remove(getClient(id));
+		 mainServer.updatePlayerCount(getClients());
+	 }
+	 public void resetGames(){
+		 ArrayList<Integer> sentPlayers = new ArrayList<Integer>();	//player IDs that has received reset message
+		 for(int i = 0;i<getClients();i++){
+			 MiniServer_b mini = socketList.get(i);
+			 if(!sentPlayers.contains(mini.id)&&(mini.state == ClientState.PLAYING)){
+				 //reset score of player and his/her pair
+				 MiniServer_b mini2 = getClient(mini.id_pair);
+				 mini.sendData("5");
+				 mini2.sendData("5");
+				 sentPlayers.add(mini.id);
+				 sentPlayers.add(mini2.id);
+				 // and initialize new game for both
+				mini.state = ClientState.PLAYING;
+				mini2.state = ClientState.PLAYING;
+
+				Random r = new Random();
+				long seed = r.nextLong();
+				
+				mini.sendData("2#"+seed+"#"+mini2.name+"#"+mini.firstPlayer);
+				mini2.sendData("2#"+seed+"#"+mini.name+"#"+mini2.firstPlayer);
+				mini.startNextGame = false;
+				mini2.startNextGame = false;
+			 }
+				
+		 }
 	 }
 }

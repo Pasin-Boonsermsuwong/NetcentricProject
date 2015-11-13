@@ -8,11 +8,7 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import a.GameUI;
-import a.NameUI;
 import a.NumberGenerator;
-import a.WelcomeUI;
-
 
 public class GameController_b {
 
@@ -23,9 +19,9 @@ public class GameController_b {
 	long seed;
 	String playerName;
 	String opponentName;
-	int scorePlayer = 0;
-	int scoreOpponent = 0;
-	boolean activeTurn = false;
+//	int scorePlayer = 0;
+//	int scoreOpponent = 0;
+	public boolean activeTurn = false;
 
 	public MainClient_b mainClient;
 	public GameUI_b gameUI;
@@ -40,7 +36,7 @@ public class GameController_b {
 	boolean startNextGame_player;
 	boolean startNextGame_opponent;
 	
-	GameState gamestate;
+	GameState gamestate; //CURRENT STATE
 	
 	public int serverID = 0;
 	public int clientID = 0;
@@ -69,6 +65,7 @@ public class GameController_b {
 			mainClient.changeCard("nameUI");
 			break;
 		case ENTER_IP:
+			activeTurn = false;
 			mainClient.changeCard("connectUI");
 			break;
 		case GAME_WAITING:
@@ -148,6 +145,8 @@ public class GameController_b {
 
 	private void startTurn(){	//STARTING PLAYER'S TURN
 		activeTurn = true;
+		startNextGame_player = false;
+		startNextGame_opponent = false;
 		if(gameUI ==null){
 			System.err.println("UIwindow is null in GameController");return;
 		}
@@ -251,4 +250,17 @@ public class GameController_b {
 		
 	}
 	
+	public void setScore(int p1,int p2){
+		gameUI.p1score.setText(""+p1);
+		gameUI.p2score.setText(""+p2);
+	}
+	public void resetGame(){
+		activeTurn = false;
+		elapsedTime_player = 0;
+		elapsedTime_opponent = 0;
+		GameStateUpdate(gamestate.GAME_FINISHED);
+		gameUI.resultLabel.setText("-");
+		gameUI.timeLabel.setText("-");
+		gameUI.currentPlayerLabel.setText("-");
+	}
 }

@@ -21,6 +21,8 @@ public class MiniServer_b extends Thread{
 	GameController_b gc;
 	Server_b server;
 	
+	boolean running = true;
+	boolean firstPlayer;
 	int id = -1;
 	int id_pair = -1;
 	public ClientState state = ClientState.NON;
@@ -48,13 +50,16 @@ public class MiniServer_b extends Thread{
 	}
 	
 	public void run(){
-		while(true){
+		while(running){
 			String receivedMSG = "";
 			try {
 				receivedMSG = br.readLine();
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(gc.gameUI, e.getMessage(),e.getClass().toString(), JOptionPane.ERROR_MESSAGE);
-				System.exit(0);
+				if(server!=null)server.destroy(id);
+				running = false;
+				
+			//	JOptionPane.showMessageDialog(null, e.getMessage(),e.getClass().toString(), JOptionPane.ERROR_MESSAGE);	
+			//	System.exit(0);
 			}
 			System.out.println("Server revceived msg : "+ receivedMSG);
 			decipherData(receivedMSG);

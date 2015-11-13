@@ -2,6 +2,8 @@ package b;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -25,7 +27,6 @@ public class Client_b{
 	private String serverName;
 	
 	private GameController_b gc;
-	
 //	private int id=0;
 	
 	public Client_b(){
@@ -125,6 +126,24 @@ public class Client_b{
 				gc.startNextGame_opponent = true;
 				gc.startNextGame();
 				break;
+			case "5":
+				if(gc.gamestate == gc.gamestate.GAME_PLAYING||gc.gamestate == gc.gamestate.GAME_WAITING){
+					JOptionPane.showMessageDialog(gc.gameUI,"Game forced reset by server","", JOptionPane.INFORMATION_MESSAGE);
+					gc.setScore(0,0);	
+					gc.resetGame();
+					gc.activeTurn = false;
+				}	
+				break;
+			case "6":
+				JOptionPane.showMessageDialog(gc.gameUI,"Pair has disconnected","", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+				/* TODO: fix bug?
+				isConnected = false;
+				gc.GameStateUpdate(gc.gamestate.ENTER_IP);
+				gc.activeTurn = false;
+				*/
+				break;
+				
 			default:
 				System.err.println("Unknown data type");
 				break;
