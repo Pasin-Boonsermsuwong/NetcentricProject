@@ -38,7 +38,7 @@ public class Client_b{
 			String hostAddress = addr.getHostAddress();
 			System.out.println("HostAddress = "+addr.getHostAddress());
 			String hostName = addr.getHostName();
-			socket.connect(new InetSocketAddress(hostName,port), 30);
+			socket.connect(new InetSocketAddress(IP,port), 300);
 			isr = new InputStreamReader(socket.getInputStream());
 			br = new BufferedReader(isr);
 			pw = new PrintWriter(socket.getOutputStream());
